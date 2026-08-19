@@ -1,92 +1,156 @@
-# Landing pages — Grupo Forró do Bom
+<div align="center">
+  <img src="./public/brand/gfb-logo-stacked.png" width="320" alt="Grupo Forró do Bom" />
 
-Repositório das landing pages e campanhas digitais do Grupo Forró do Bom. A implementação atual é a primeira landing de captação de interessados pelo WhatsApp, construída com Next.js 16.3.1, TypeScript, CSS Modules e GSAP.
+  # Campanhas que colocam gente para dançar
 
-O projeto foi organizado para crescer sem misturar campanhas. Novas landing pages devem receber uma rota estável, conteúdo próprio e assets próprios; variações de headline pertencem à configuração da campanha, não a branches diferentes. A convenção completa está em [`docs/CAMPAIGNS.md`](docs/CAMPAIGNS.md).
+  **Um sistema de landing pages para transformar interesse em conversas, matrículas e continuidade.**
 
-## Executar localmente
+  Feira de Santana, Bahia · 11 anos de história · Mais de 500 alunos formados
+
+  [Propósito comercial](#o-negócio-antes-da-página) · [Campanhas](#uma-casa-para-várias-campanhas) · [Execução local](#rode-localmente) · [Deploy](#publicação)
+</div>
+
+<br />
+
+<img src="./public/images/illustrative/hero-aula.png" width="100%" alt="Cena de dança usada na direção visual da landing do Grupo Forró do Bom" />
+
+## O negócio antes da página
+
+O Grupo Forró do Bom não precisa de uma página que apenas receba visitas. Precisa de campanhas que reconheçam intenções diferentes e conduzam cada pessoa até a conversa certa.
+
+Este repositório reúne essas campanhas em uma base comum. A marca, a experiência, o tracking e as informações do GFB permanecem consistentes. A mensagem, a oferta e o recorte de público podem mudar sem apagar o histórico das campanhas anteriores.
+
+> Uma landing page para cada intenção. Uma experiência reconhecível em todas elas.
+
+### Os quatro objetivos comerciais
+
+| Intenção da pessoa | Próximo passo esperado |
+| --- | --- |
+| Nunca dancei | Participar da primeira aula de uma nova turma |
+| Quero me organizar | Entrar na lista prioritária de quinta ou sábado |
+| Quero continuar | Escolher o plano que combina com o ritmo de evolução desejado |
+| Já danço | Agendar um nivelamento gratuito para a turma adequada |
+
+O fechamento acontece pelo WhatsApp. Não existe checkout, pagamento online ou formulário que alongue o caminho.
+
+## A jornada que importa
+
+| Momento | O que a página precisa fazer | Sinal de sucesso |
+| --- | --- | --- |
+| Descoberta | Fazer a pessoa se reconhecer na mensagem da campanha | A pessoa continua explorando |
+| Confiança | Mostrar método, ambiente, experiência e provas reais | A proposta passa a parecer possível |
+| Decisão | Apresentar turma, plano ou nivelamento com clareza | A intenção fica mais específica |
+| Conversa | Abrir o WhatsApp com contexto suficiente | A conversa começa qualificada |
+| Continuidade | Conectar a primeira aula ao próximo passo | A matrícula deixa de ser uma decisão solta |
+
+O clique é um meio. A métrica central é a capacidade de gerar alunos que começam, evoluem e permanecem.
+
+## Uma casa para várias campanhas
+
+A rota `/` contém a landing geral para iniciantes. As próximas páginas entram em rotas próprias, com conteúdo e assets isolados.
+
+```text
+/campanhas/iniciantes-quinta
+/campanhas/iniciantes-sabado
+/campanhas/nivelamento
+/campanhas/imersao-gfb
+```
+
+Uma mesma campanha pode usar várias headlines. Cada variante recebe um identificador permanente, como `hero-a`, `hero-b` ou `hero-c`. Assim, uma nova mensagem não sobrescreve a anterior e o tracking consegue relacionar campanha, criativo e resultado.
+
+```text
+utm_campaign = objetivo comercial
+utm_content  = criativo ou variante de headline
+```
+
+Branches representam trabalho em desenvolvimento. Campanhas publicadas pertencem à `main` e às suas rotas estáveis.
+
+[Leia a convenção completa de campanhas](./docs/CAMPAIGNS.md).
+
+## A landing atual
+
+A primeira experiência publicada nesta base atende quem quer começar do zero e quem já dança.
+
+| Frente | Implementação |
+| --- | --- |
+| Conversão | CTAs contextuais e mensagens editáveis para WhatsApp |
+| Oferta | Aula inicial, Essencial GFB e Imersão GFB |
+| Turmas | Estado de turma aberta e estado de lista prioritária |
+| Nivelamento | Painel acessível com seleção de básico, intermediário e avançado |
+| Confiança | Provas sociais, monitores, depoimentos e atmosfera das aulas |
+| Movimento | GSAP, ScrollTrigger, carrosséis e transições com ritmo controlado |
+| Acessibilidade | HTML semântico, teclado, foco visível e redução de movimento |
+| Mensuração | GA4, UTMs preservadas e eventos sem dados pessoais |
+| Descoberta | SEO local, Open Graph, sitemap, robots e dados estruturados |
+
+## Uma identidade que se move
+
+O visual parte da direção **solar popular**. Amarelo, creme e marrom constroem contraste sem transformar toda a página em uma única superfície. Tipografia grande, recortes editoriais e movimento dão energia de dança sem recorrer a clichês de festa junina.
+
+| Elemento | Escolha |
+| --- | --- |
+| Amarelo | `#F6C300` |
+| Creme | `#FFF2DB` |
+| Marrom | `#2B1A0E` |
+| Tipografia | Saans Regular, Medium, SemiBold e Bold |
+| Movimento | GSAP com `useGSAP`, timelines, ScrollTrigger e `matchMedia()` |
+
+O scroll permanece nativo. As animações usam principalmente `transform` e `opacity` e respeitam `prefers-reduced-motion`.
+
+## Rode localmente
 
 Requisito: Node.js 20.9 ou superior.
 
 ```bash
+git clone https://github.com/acssjr/gfb_lp.git
+cd gfb_lp
 npm install
 copy .env.example .env.local
 npm run dev
 ```
 
-Abra `http://localhost:3000`.
+Acesse `http://localhost:3000`.
 
-## Variáveis de ambiente
+## Configuração
 
-| Variável | Obrigatória em produção | Uso |
+| Variável | Quando usar | Função |
 | --- | --- | --- |
-| `NEXT_PUBLIC_WHATSAPP_NUMBER` | Sim | Número com DDI e DDD, apenas dígitos. Sem ele, os CTAs levam ao aviso de configuração pendente. |
-| `NEXT_PUBLIC_SITE_URL` | Sim | URL pública usada em canonical, Open Graph, sitemap e JSON-LD. |
-| `NEXT_PUBLIC_GA4_MEASUREMENT_ID` | Não | Ativa o carregamento do GA4. |
-| `NEXT_PUBLIC_COHORT_STATUS` | Sim | `waitlist` ou `open`. |
-| `NEXT_PUBLIC_COHORT_START_DATE` | Quando aberta | Data real exibida para a próxima turma. |
-| `NEXT_PUBLIC_COHORT_SCHEDULE` | Quando aberta | `thursday` ou `saturday`. |
-| `NEXT_PUBLIC_COHORT_AVAILABLE_SPOTS` | Não | Exibir apenas quando o número de vagas for real. |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | Produção | Número com DDI e DDD, somente dígitos |
+| `NEXT_PUBLIC_SITE_URL` | Produção | Canonical, Open Graph, sitemap e JSON-LD |
+| `NEXT_PUBLIC_GA4_MEASUREMENT_ID` | Opcional | Carregamento do GA4 |
+| `NEXT_PUBLIC_COHORT_STATUS` | Sempre | `waitlist` ou `open` |
+| `NEXT_PUBLIC_COHORT_START_DATE` | Turma aberta | Data real de início |
+| `NEXT_PUBLIC_COHORT_SCHEDULE` | Turma aberta | `thursday` ou `saturday` |
+| `NEXT_PUBLIC_COHORT_AVAILABLE_SPOTS` | Opcional | Número real de vagas disponíveis |
 
-## Onde editar conteúdo
+Sem o número oficial, os CTAs mostram um aviso de configuração pendente. Nenhum contato é inventado.
 
-- `content/siteContent.ts`: copy, mensagens do WhatsApp, planos e FAQ.
-- `config/site.ts`: endereço, horários, número, turma e links de mapa.
-- `config/visualAssets.ts`: imagens editoriais, textos alternativos, legendas e enquadramentos.
-- `components/landing/`: seções e interações da página.
-- `components/landing/Landing.module.css`: identidade visual e responsividade.
-- `app/politica-de-privacidade/` e `app/termos-de-uso/`: páginas institucionais ligadas no rodapé.
+## Onde cada coisa vive
 
-## Novas campanhas e headlines
-
-A página atual permanece na rota `/`. Para as próximas campanhas, use rotas como `/campanhas/nome-da-campanha` e mantenha cada campanha isolada em três partes:
-
-- página em `app/campanhas/<slug>/page.tsx`;
-- conteúdo e variações em `content/campaigns/<slug>.ts`;
-- imagens em `public/campaigns/<slug>/`.
-
-Cada headline deve ter um identificador permanente, por exemplo `hero-a`, `hero-b` e `hero-c`. Isso permite trocar ou testar a mensagem sem apagar o histórico da campanha. Componentes, marca, tracking, WhatsApp e informações institucionais continuam compartilhados.
-
-## Tipografia e imagens
-
-Os logotipos horizontal, quebrado e o monograma estão em `public/brand/`. A interface usa Saans por meio de `next/font/local`, com os arquivos em `app/fonts/`.
-
-As fotografias usadas nesta versão ficam em `public/images/illustrative/`. Elas ocupam hero, reconhecimento, atmosfera, monitores e relatos. Para substituí-las por registros próprios, mantenha as chaves em `config/visualAssets.ts` e troque os caminhos, dimensões, textos alternativos e legendas.
-
-Antes da publicação, substitua os nomes, histórias e depoimentos simulados pelos conteúdos autorizados. Também devem ser confirmados o número oficial do WhatsApp, domínio final, formas de pagamento, referência textual do endereço, data de início e vagas de uma turma aberta.
-
-## Movimento
-
-As animações ficam centralizadas em `components/landing/AnimatedLanding.tsx`. O sistema usa `useGSAP`, timelines, `ScrollTrigger`, `gsap.matchMedia()` e cleanup automático. Há composição de entrada no hero, segunda dobra em movimento contínuo, revelação editorial das fotografias, profundidade discreta, provas sociais em sequência, gestos nos cards e CTA final. O scroll continua nativo e `prefers-reduced-motion` é respeitado.
-
-## Turma aberta e lista prioritária
-
-O estado inicial é `waitlist`. Para mostrar uma turma aberta, configure:
-
-```env
-NEXT_PUBLIC_COHORT_STATUS=open
-NEXT_PUBLIC_COHORT_START_DATE=DD/MM/AAAA
-NEXT_PUBLIC_COHORT_SCHEDULE=thursday
-NEXT_PUBLIC_COHORT_AVAILABLE_SPOTS=
+```text
+app/                    rotas, metadata, sitemap e páginas legais
+components/landing/     seções, interações e identidade responsiva
+config/                 negócio, turma, endereço e assets visuais
+content/                copy, planos, FAQ e mensagens do WhatsApp
+docs/                   campanhas, tracking, decisões e planos
+lib/                    analytics, UTMs e links do WhatsApp
+public/brand/           logos e monograma do GFB
+public/images/          fotografias usadas pela experiência
+tests/                  comportamento comercial e interface
 ```
 
-Deixe vagas em branco até existir um número confirmado.
+### Pontos de edição frequentes
 
-## WhatsApp
+| Precisa mudar | Arquivo principal |
+| --- | --- |
+| Copy, planos e FAQ | [`content/siteContent.ts`](./content/siteContent.ts) |
+| Endereço, horários e turma | [`config/site.ts`](./config/site.ts) |
+| Fotografias e enquadramentos | [`config/visualAssets.ts`](./config/visualAssets.ts) |
+| Identidade e responsividade | [`components/landing/Landing.module.css`](./components/landing/Landing.module.css) |
+| Animações | [`components/landing/AnimatedLanding.tsx`](./components/landing/AnimatedLanding.tsx) |
+| Eventos e propriedades | [`docs/TRACKING.md`](./docs/TRACKING.md) |
 
-As mensagens são centralizadas e codificadas em URLs `wa.me`. Há mensagens diferentes para iniciante, quinta, sábado, cada plano e cada nível do nivelamento. Não existe checkout nem pagamento on-line.
-
-## Tracking
-
-O plano completo está em `docs/TRACKING.md`. UTMs permanecem na sessão até o clique e entram apenas como propriedades permitidas. Nenhum dado pessoal ou texto de mensagem é enviado ao GA4.
-
-## SEO local
-
-A implementação inclui metadata, canonical, Open Graph, Twitter Card, robots, sitemap e JSON-LD com `DanceSchool`, `WebSite` e `FAQPage`. Telefone, coordenadas, redes sociais e horários de funcionamento não foram inventados e devem ser adicionados somente quando confirmados.
-
-Depois do deploy, valide a URL pública no Rich Results Test, Schema.org Validator e Google Search Console.
-
-## Qualidade
+## Qualidade antes de publicar
 
 ```bash
 npm test
@@ -95,8 +159,41 @@ npm run build
 npm audit
 ```
 
-Último diagnóstico local da build de produção: Lighthouse 98 em Performance e 100 em Acessibilidade, Boas Práticas e SEO, com CLS 0 e LCP de 2,3 s. O relatório completo está em `lighthouse-report.json`; resultados podem variar conforme máquina e rede.
+A suíte cobre conteúdo comercial, rotas de conversão, seletores acessíveis, carrosséis e estados da landing. O relatório local incluído em [`lighthouse-report.json`](./lighthouse-report.json) registrou 98 em Performance e 100 em Acessibilidade, Boas Práticas e SEO. Resultados podem variar conforme máquina, rede e assets de cada campanha.
 
-## Deploy na Vercel
+## Publicação
 
-Importe o repositório na Vercel, cadastre as variáveis de ambiente e faça o deploy. O projeto usa apenas recursos compatíveis com a plataforma e não depende de banco, pagamento ou backend próprio.
+O projeto está preparado para Vercel.
+
+1. Importe este repositório.
+2. Cadastre as variáveis de ambiente.
+3. Confirme o domínio usado em `NEXT_PUBLIC_SITE_URL`.
+4. Valide WhatsApp, UTMs, GA4 e metadata na URL pública.
+5. Publique somente datas, vagas e depoimentos confirmados.
+
+Não há banco de dados, checkout, pagamento online ou painel administrativo nesta versão.
+
+## Antes de uma campanha entrar no ar
+
+1. Defina uma intenção comercial por página.
+2. Relacione headline, anúncio e `utm_content`.
+3. Confirme o número oficial do WhatsApp.
+4. Substitua conteúdos simulados por materiais autorizados.
+5. Revise datas, vagas, endereço e condições dos planos.
+6. Teste a jornada completa no celular.
+7. Registre a campanha sem apagar as variantes anteriores.
+
+## Documentação
+
+| Documento | Para que serve |
+| --- | --- |
+| [`docs/CAMPAIGNS.md`](./docs/CAMPAIGNS.md) | Rotas, variantes, assets e fluxo de novas campanhas |
+| [`docs/TRACKING.md`](./docs/TRACKING.md) | Eventos, propriedades, UTMs e limites de privacidade |
+| [`docs/superpowers/specs/`](./docs/superpowers/specs/) | Decisões de experiência, conversão e direção visual |
+| [`docs/superpowers/plans/`](./docs/superpowers/plans/) | Histórico dos ciclos de implementação |
+
+## Uso do projeto
+
+Código, identidade e assets reunidos para as campanhas digitais do Grupo Forró do Bom. O repositório não concede licença automática para redistribuição da marca, das imagens ou da tipografia.
+
+Mantido em [@acssjr](https://github.com/acssjr).

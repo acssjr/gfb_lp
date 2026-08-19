@@ -1,6 +1,7 @@
 {
   "name": "gfb-landing",
   "version": "0.1.0",
+  "description": "Campanhas digitais do Grupo Forró do Bom para transformar interesse em conversas, matrículas e continuidade.",
   "private": true,
   "scripts": {
     "dev": "next dev",
