@@ -292,23 +292,31 @@ export function AnimatedLanding({ children }: AnimatedLandingProps) {
             );
 
           if (context.conditions?.desktop) {
-            gsap.utils.toArray<HTMLElement>("[data-depth]").forEach((element, index) => {
+            const depthElements = gsap.utils.toArray<HTMLElement>("[data-depth]");
+            const depthOffset = (index: number, element: HTMLElement) => {
               const amount = element.dataset.depth === "medium" ? 4.5 : 2.5;
+              return index % 2 === 0 ? amount : -amount;
+            };
+
+            if (depthElements.length && root.current) {
               gsap.fromTo(
-                element,
-                { yPercent: index % 2 === 0 ? -amount : amount },
+                depthElements,
                 {
-                  yPercent: index % 2 === 0 ? amount : -amount,
+                  yPercent: (index, element: HTMLElement) => -depthOffset(index, element),
+                },
+                {
+                  yPercent: depthOffset,
                   ease: "none",
                   scrollTrigger: {
-                    trigger: element,
-                    start: "clamp(top bottom)",
-                    end: "clamp(bottom top)",
+                    trigger: root.current,
+                    start: "top top",
+                    end: "bottom bottom",
                     scrub: 0.8,
+                    invalidateOnRefresh: true,
                   },
                 },
               );
-            });
+            }
           }
 
         },

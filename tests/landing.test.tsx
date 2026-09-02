@@ -193,11 +193,18 @@ describe("LandingPage", () => {
   });
 
   it("uses a stronger waitlist invitation and practical pre-class questions", () => {
-    render(<LandingPage />);
+    const { container } = render(<LandingPage />);
 
     expect(
       screen.getByRole("heading", { name: "O próximo começo pode ser o seu." }),
     ).toBeInTheDocument();
+    const scheduleSection = container.querySelector("#proxima-turma");
+    expect(scheduleSection).toBeInTheDocument();
+    expect(
+      screen.getByRole("group", { name: "Qual horário funciona melhor para você?" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: /Quinta-feira às 19h30/i })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: /Sábado às 14h/i })).toBeInTheDocument();
     expect(screen.getByText("Estamos ansiosos para ter você conosco.")).toBeInTheDocument();
     expect(screen.getByText("E se eu achar que não tenho ritmo?")).toBeInTheDocument();
     expect(
@@ -206,6 +213,16 @@ describe("LandingPage", () => {
     expect(screen.getByText("E se eu faltar a uma aula?")).toBeInTheDocument();
     expect(screen.getByText(/acesso aos vídeos dos passos trabalhados/i)).toBeInTheDocument();
     expect(screen.getByText("PERGUNTAS FREQUENTES")).toBeInTheDocument();
+  });
+
+  it("uses one responsive depth ScrollTrigger instead of recreating one per image", () => {
+    const animationSource = readFileSync("components/landing/AnimatedLanding.tsx", "utf8");
+
+    expect(animationSource).toContain("const depthElements");
+    expect(animationSource).toMatch(/gsap\.fromTo\(\s*depthElements,/);
+    expect(animationSource).not.toMatch(
+      /toArray<HTMLElement>\("\[data-depth\]"\)\.forEach/,
+    );
   });
 
   it("keeps trust numbers static while exposing presentation-only choreography hooks", () => {
