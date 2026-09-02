@@ -1,4 +1,5 @@
 import { AnalyticsInitializer } from "@/components/landing/AnalyticsInitializer";
+import { AboutGfbSection } from "@/components/landing/AboutGfbSection";
 import { AnimatedLanding } from "@/components/landing/AnimatedLanding";
 import { AtmosphereGallery } from "@/components/landing/AtmosphereGallery";
 import { CohortSection } from "@/components/landing/CohortSection";
@@ -31,6 +32,7 @@ export function LandingPage() {
         <HeroSection />
         <RecognitionSection />
         <ProofSection />
+        <AboutGfbSection />
         <AtmosphereGallery />
         <HowItWorks />
         <LearningSection />

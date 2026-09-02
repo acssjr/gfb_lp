@@ -50,12 +50,15 @@ export function HeroSection() {
             </svg>
           </a>
         </div>
+        <p className={styles.heroClickTrigger} data-hero-item>
+          Você fala com a equipe pelo WhatsApp. Sem pagamento agora.
+        </p>
       </div>
 
       <div className={styles.heroVisual} data-hero-item data-hero-visual>
         <IllustrativeImage
           asset={visualAssets.hero}
-          ratio="portrait"
+          ratio="landscape"
           priority
           sizes="(max-width: 767px) 92vw, 42vw"
           depth="medium"

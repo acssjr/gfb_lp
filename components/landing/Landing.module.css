@@ -207,6 +207,14 @@
   margin-top: 1.25rem;
 }
 
+.heroClickTrigger {
+  max-width: 31rem;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
 .heroActions .primaryButton {
   min-height: 3.55rem;
   padding-inline: 1.4rem;
@@ -692,6 +700,91 @@
   line-height: 1;
 }
 
+.aboutSection {
+  position: relative;
+  display: grid;
+  gap: clamp(2.5rem, 7vw, 5rem);
+  overflow: hidden;
+  padding: clamp(4.5rem, 10vw, 9rem) var(--page-padding);
+  color: var(--cream);
+  background: var(--orange);
+  isolation: isolate;
+}
+
+.aboutYear {
+  position: absolute;
+  top: -0.16em;
+  right: -0.08em;
+  z-index: -1;
+  color: transparent;
+  font-size: clamp(8rem, 31vw, 28rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.08em;
+  pointer-events: none;
+  -webkit-text-stroke: 2px rgb(255 242 219 / 20%);
+}
+
+.aboutCopy {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+}
+
+.aboutNarrative {
+  position: relative;
+  z-index: 2;
+}
+
+.aboutCopy h2 {
+  max-width: 12ch;
+  margin-top: 1rem;
+  font-size: clamp(3rem, 9vw, 7rem);
+  font-weight: 800;
+  line-height: 0.91;
+  letter-spacing: -0.06em;
+  text-wrap: balance;
+}
+
+.aboutText {
+  display: grid;
+  max-width: 45rem;
+  gap: 1rem;
+  margin-top: 0;
+  font-size: clamp(1.08rem, 1.1vw, 1.3rem);
+  line-height: 1.48;
+}
+
+.aboutClosing {
+  max-width: 34rem;
+  margin-top: 1.75rem;
+  padding: 1rem 0 0 1.15rem;
+  border-top: 2px solid var(--yellow);
+  border-left: 0.45rem solid var(--yellow);
+  color: var(--yellow);
+  font-size: clamp(1.28rem, 2.1vw, 2rem);
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.aboutVisual {
+  position: relative;
+  width: min(88vw, 29rem);
+  justify-self: end;
+}
+
+.aboutVisual .illustrativeFigure {
+  transform: rotate(1.2deg);
+}
+
+.aboutVisual .illustrativeImageFrame {
+  border-color: var(--cream);
+}
+
+.aboutVisual figcaption {
+  color: var(--cream);
+}
+
 .sectionHeading {
   display: grid;
   max-width: 52rem;
@@ -780,11 +873,12 @@
 }
 
 .atmosphereViewport {
-  overflow: visible;
+  overflow: hidden;
 }
 
 .atmosphereTrack {
   display: flex;
+  align-items: flex-start;
   column-gap: clamp(0.85rem, 2vw, 1.5rem);
   will-change: transform;
 }
@@ -795,6 +889,14 @@
   margin: 0;
   transform-origin: center center;
   will-change: transform, opacity;
+}
+
+.atmosphereSlide[data-media-orientation="portrait"] {
+  flex-basis: min(82vw, 30rem, 43.875dvh);
+}
+
+.atmosphereSlide[data-media-orientation="square"] {
+  flex-basis: min(82vw, 46rem);
 }
 
 .atmosphereImageFrame {
@@ -816,9 +918,30 @@
   transform: rotate(-8deg);
 }
 
-.atmosphereImageFrame img {
+.atmosphereImageFrame img,
+.atmosphereVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   will-change: transform;
+}
+
+.atmosphereImageFrame[data-media-kind="video"] {
+  background: var(--brown);
+}
+
+.atmosphereImageFrame[data-media-orientation="portrait"] {
+  aspect-ratio: 9 / 16;
+}
+
+.atmosphereImageFrame[data-media-orientation="square"] {
+  aspect-ratio: 1;
+}
+
+.atmosphereVideo {
+  object-fit: cover;
 }
 
 .atmosphereImageFrame > span {
@@ -1009,34 +1132,7 @@
   gap: 1rem;
 }
 
-.learningFear {
-  display: grid;
-  width: fit-content;
-  max-width: 42rem;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.65rem 0.85rem;
-  color: var(--brown);
-  background: var(--sand);
-  border-left: 0.45rem solid var(--orange);
-}
-
-.learningFear span {
-  max-width: 11ch;
-  font-size: 0.68rem;
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.learningFear strong {
-  font-size: clamp(1rem, 1.2vw, 1.25rem);
-  line-height: 1.12;
-}
-
-.learningFear + p {
+.learningSlide > div:last-child > p:first-child {
   color: var(--yellow);
   font-size: 0.95rem;
   font-weight: 800;
@@ -1183,6 +1279,14 @@
   padding-top: 0.75rem;
 }
 
+.pricingDecisionNote {
+  max-width: 42rem;
+  margin: -0.75rem 0 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .priceCard {
   position: relative;
   display: flex;
@@ -1204,6 +1308,46 @@
 .plusPlan {
   border-top-width: 0.65rem;
   border-top-color: var(--orange);
+}
+
+@media (max-width: 599px) {
+  .entryPlan {
+    min-height: 0;
+    padding: 1.15rem;
+  }
+
+  .entryPlan .planMeta {
+    margin-bottom: 1.35rem;
+  }
+
+  .entryPlan h3 {
+    max-width: none;
+    font-size: clamp(1.75rem, 9vw, 2.4rem);
+  }
+
+  .entryPlan .planBenefit {
+    min-height: 0;
+    margin-top: 0.65rem;
+  }
+
+  .entryPlan .planPrice {
+    margin: 1rem 0;
+    padding: 0.85rem 0;
+  }
+
+  .entryPlan .planPrice strong {
+    font-size: clamp(3rem, 17vw, 4.15rem);
+  }
+
+  .entryPlan ul {
+    gap: 0.55rem;
+    margin-bottom: 1rem;
+  }
+
+  .entryPlan .planNote {
+    margin-bottom: 1rem;
+    font-size: 0.96rem;
+  }
 }
 
 .planBadge {
@@ -2388,6 +2532,11 @@
 }
 
 @media (max-width: 430px) {
+  .atmosphereSlide figcaption {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
   .levelingDialog {
     width: calc(100% - 0.75rem);
     max-height: calc(100dvh - 0.5rem);
@@ -2543,7 +2692,7 @@
 
   .heroVisual .illustrativeImageFrame {
     min-height: 32rem;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 4 / 3;
   }
 
   .recognitionStage {
@@ -2563,6 +2712,32 @@
 
   .proofGrid strong {
     font-size: clamp(5.5rem, 10vw, 10rem);
+  }
+
+  .aboutSection {
+    grid-template-columns: minmax(0, 1.15fr) minmax(19rem, 0.85fr);
+    grid-template-areas:
+      "intro visual"
+      "narrative visual";
+    align-items: center;
+    row-gap: 2rem;
+  }
+
+  .aboutCopy {
+    grid-area: intro;
+  }
+
+  .aboutNarrative {
+    grid-area: narrative;
+  }
+
+  .aboutCopy h2 {
+    font-size: clamp(3.6rem, 6vw, 6.3rem);
+  }
+
+  .aboutVisual {
+    grid-area: visual;
+    width: 100%;
   }
 
   .atmosphereSlide {
@@ -2671,6 +2846,7 @@
   .heroSection,
   .recognitionSection,
   .proofSection,
+  .aboutSection,
   .atmosphereSection,
   .howSection,
   .whySection,
@@ -2772,7 +2948,8 @@
 
   .atmosphereTrack,
   .atmosphereSlide,
-  .atmosphereImageFrame img {
+  .atmosphereImageFrame img,
+  .atmosphereVideo {
     will-change: auto;
   }
 

@@ -14,7 +14,10 @@ gsap.registerPlugin(useGSAP);
 export function AtmosphereGallery() {
   const [active, setActive] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
+  const [inView, setInView] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const pointerStart = useRef<number | null>(null);
 
@@ -24,26 +27,56 @@ export function AtmosphereGallery() {
   }
 
   useEffect(() => {
-    if (!autoplay || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncPreference = () => setReducedMotion(mediaQuery.matches);
+    syncPreference();
+    mediaQuery.addEventListener("change", syncPreference);
+    return () => mediaQuery.removeEventListener("change", syncPreference);
+  }, []);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: "220px 0px", threshold: 0.08 },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!autoplay || !inView || reducedMotion) return;
     const timer = window.setInterval(() => {
       setActive((current) => (current + 1) % atmosphereFrames.length);
     }, 5200);
     return () => window.clearInterval(timer);
-  }, [autoplay]);
+  }, [autoplay, inView, reducedMotion]);
 
   useGSAP(
     () => {
       const track = trackRef.current;
-      if (!track) return;
+      const viewport = viewportRef.current;
+      if (!track || !viewport) return;
       const slides = gsap.utils.toArray<HTMLElement>("[data-atmosphere-slide]");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const getTargetX = () => {
-        const firstSlide = slides[0];
-        if (!firstSlide) return 0;
-        const gap = Number.parseFloat(window.getComputedStyle(track).columnGap) || 0;
-        return -active * (firstSlide.getBoundingClientRect().width + gap);
+        const activeSlide = slides[active];
+        if (!activeSlide) return 0;
+        const centeredOffset =
+          activeSlide.dataset.mediaOrientation === "portrait"
+            ? Math.max(0, (viewport.clientWidth - activeSlide.offsetWidth) / 2)
+            : 0;
+        return -activeSlide.offsetLeft + centeredOffset;
       };
+
+      const activeSlide = slides[active];
+      const activeHeight = activeSlide?.scrollHeight ?? 0;
 
       const timeline = gsap.timeline({
         defaults: {
@@ -53,8 +86,17 @@ export function AtmosphereGallery() {
         },
       });
 
+      timeline.to(track, { x: getTargetX }, 0);
+
+      if (activeHeight > 0) {
+        timeline.to(
+          viewport,
+          { height: activeHeight, duration: reducedMotion ? 0.16 : 0.56 },
+          0,
+        );
+      }
+
       timeline
-        .to(track, { x: getTargetX }, 0)
         .to(
           slides,
           {
@@ -67,7 +109,7 @@ export function AtmosphereGallery() {
           0,
         )
         .to(
-          "[data-atmosphere-slide] img",
+          "[data-atmosphere-media]",
           {
             scale: (index) => (index === active || reducedMotion ? 1.035 : 1.1),
           },
@@ -92,8 +134,10 @@ export function AtmosphereGallery() {
       if (typeof ResizeObserver !== "undefined") {
         const observer = new ResizeObserver(() => {
           gsap.set(track, { x: getTargetX() });
+          const nextHeight = slides[active]?.scrollHeight;
+          if (nextHeight) gsap.set(viewport, { height: nextHeight });
         });
-        observer.observe(track.parentElement ?? track);
+        if (activeSlide) observer.observe(activeSlide);
         return () => observer.disconnect();
       }
     },
@@ -102,6 +146,7 @@ export function AtmosphereGallery() {
 
   return (
     <section
+      id="ambiente-gfb"
       ref={sectionRef}
       className={styles.atmosphereSection}
       aria-labelledby="atmosphere-title"
@@ -122,6 +167,7 @@ export function AtmosphereGallery() {
       <div
         className={styles.atmosphereCarousel}
         data-atmosphere-carousel
+        data-active-format={atmosphereFrames[active].orientation}
         aria-roledescription="carrossel"
         aria-label="Registros do ambiente das aulas"
         onPointerDown={(event) => {
@@ -136,37 +182,63 @@ export function AtmosphereGallery() {
         }}
         onFocusCapture={() => setAutoplay(false)}
       >
-        <div className={styles.atmosphereViewport}>
+        <div ref={viewportRef} className={styles.atmosphereViewport}>
           <div ref={trackRef} className={styles.atmosphereTrack}>
             {atmosphereFrames.map((frame, index) => {
-              const asset = visualAssets[frame.asset];
+              const asset = frame.kind === "image" ? visualAssets[frame.asset] : null;
+              const shouldLoadVideo = frame.kind === "video" && inView && index === active;
               return (
                 <figure
                   key={frame.label}
                   className={styles.atmosphereSlide}
                   data-atmosphere-slide
                   data-active={index === active ? "true" : "false"}
+                  data-media-orientation={frame.orientation}
                   aria-hidden={index !== active}
                 >
-                  <div className={styles.atmosphereImageFrame}>
-                    <Image
-                      src={asset.src}
-                      alt={asset.alt}
-                      fill
-                      loading="lazy"
-                      sizes="(max-width: 767px) 84vw, 68vw"
-                      style={{
-                        objectPosition:
-                          "position" in asset && typeof asset.position === "string"
-                            ? asset.position
-                            : undefined,
-                      }}
-                    />
+                  <div
+                    className={styles.atmosphereImageFrame}
+                    data-media-kind={frame.kind}
+                    data-media-orientation={frame.orientation}
+                  >
+                    {frame.kind === "video" ? (
+                      <video
+                        key={shouldLoadVideo ? "active" : "idle"}
+                        className={styles.atmosphereVideo}
+                        poster={frame.poster}
+                        muted
+                        loop
+                        playsInline
+                        preload="none"
+                        autoPlay={shouldLoadVideo && !reducedMotion}
+                        aria-label={frame.alt}
+                        data-atmosphere-video
+                        data-atmosphere-media
+                      >
+                        {shouldLoadVideo ? <source src={frame.src} type="video/mp4" /> : null}
+                        Seu navegador não consegue reproduzir este vídeo.
+                      </video>
+                    ) : asset ? (
+                      <Image
+                        src={asset.src}
+                        alt={asset.alt}
+                        fill
+                        loading="lazy"
+                        sizes="(max-width: 767px) 84vw, 68vw"
+                        style={{
+                          objectPosition:
+                            "position" in asset && typeof asset.position === "string"
+                              ? asset.position
+                              : undefined,
+                        }}
+                        data-atmosphere-media
+                      />
+                    ) : null}
                     <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                   </div>
                   <figcaption>
                     <strong>{frame.label}</strong>
-                    <span>{asset.caption}</span>
+                    <span>{frame.kind === "video" ? frame.caption : asset?.caption}</span>
                   </figcaption>
                 </figure>
               );
@@ -175,22 +247,22 @@ export function AtmosphereGallery() {
         </div>
 
         <div className={styles.atmosphereControls}>
-          <div className={styles.atmosphereDots} aria-label="Escolher foto">
+          <div className={styles.atmosphereDots} aria-label="Escolher registro">
             {atmosphereFrames.map((frame, index) => (
               <button
                 key={frame.label}
                 type="button"
-                aria-label={`Mostrar foto ${index + 1}`}
+                aria-label={`Mostrar registro ${index + 1}`}
                 aria-current={active === index ? "true" : undefined}
                 onClick={() => select(index)}
               />
             ))}
           </div>
           <div className={styles.atmosphereArrows}>
-            <button type="button" aria-label="Foto anterior" onClick={() => select(active - 1)}>
+            <button type="button" aria-label="Registro anterior" onClick={() => select(active - 1)}>
               <span aria-hidden="true">←</span>
             </button>
-            <button type="button" aria-label="Próxima foto" onClick={() => select(active + 1)}>
+            <button type="button" aria-label="Próximo registro" onClick={() => select(active + 1)}>
               <span aria-hidden="true">→</span>
             </button>
           </div>

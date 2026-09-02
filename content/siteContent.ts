@@ -22,26 +22,61 @@ export const recognitionItems = [
   "Eu travo quando começa o forró",
 ] as const;
 
+export const gfbHistory = {
+  kicker: "HISTÓRIA DO GFB",
+  title: "De nove pessoas na UEFS a uma escola que faz Feira dançar.",
+  origin:
+    "O Grupo Forró do Bom nasceu em junho de 2015, na UEFS, por iniciativa de Tailan Cavalcante. O que começou com nove pessoas brincando de dançar cresceu até se tornar uma escola reconhecida em Feira de Santana e região.",
+  legacy:
+    "Mais de 3 mil pessoas já passaram pelo GFB. Ao longo dessa história, o grupo ajudou a formar professores e dançarinos e, em um de seus marcos, chegou a reunir aproximadamente 200 alunos ativos.",
+  closing: "Uma história construída com gente que chegou para aprender e ficou pela dança.",
+} as const;
+
 export const atmosphereFrames = [
   {
-    label: "Dança em movimento",
-    ratio: "portrait",
-    asset: "hero",
+    kind: "image",
+    orientation: "landscape",
+    label: "O forró também ocupa a cidade",
+    asset: "community",
   },
   {
-    label: "Trocas e risadas",
-    ratio: "landscape",
+    kind: "video",
+    orientation: "portrait",
+    label: "Uma comunidade em movimento",
+    src: "/media/gfb/comunidade-gfb-encontro-silencioso.mp4",
+    poster: "/media/gfb/comunidade-gfb-encontro-poster.webp",
+    alt: "Encontro com alunos e equipe do Grupo Forró do Bom",
+    caption: "A dança aproxima e a convivência ganha espaço dentro e fora das aulas.",
+  },
+  {
+    kind: "image",
+    orientation: "square",
+    label: "Gente que continua por perto",
     asset: "exchange",
   },
   {
-    label: "Orientação próxima",
-    ratio: "square",
-    asset: "guidance",
+    kind: "video",
+    orientation: "portrait",
+    label: "A turma iniciante em movimento",
+    src: "/media/gfb/turma-iniciante-em-movimento-silencioso.mp4",
+    poster: "/media/gfb/turma-iniciante-em-movimento-poster.webp",
+    alt: "Registro em vídeo de uma turma iniciante do Grupo Forró do Bom",
+    caption: "Um registro da evolução construída em aula, do primeiro passo à dança em grupo.",
   },
   {
-    label: "A turma por dentro",
-    ratio: "landscape",
-    asset: "community",
+    kind: "image",
+    orientation: "landscape",
+    label: "Uma turma que vira encontro",
+    asset: "arrival",
+  },
+  {
+    kind: "video",
+    orientation: "portrait",
+    label: "A dança acontece de verdade",
+    src: "/media/gfb/aula-em-movimento-reel-silencioso.mp4",
+    poster: "/media/gfb/aula-em-movimento-reel-poster.webp",
+    alt: "Alunos do Grupo Forró do Bom dançando durante uma aula",
+    caption: "Um registro próximo de quem está aprendendo, praticando e dançando junto.",
   },
 ] as const;
 
@@ -65,22 +100,19 @@ export const beginnerSteps = [
 
 export const learningItems = [
   {
-    label: "RITMO",
-    fear: "Medo de ficar parado quando a música começa",
-    title: "Você aprende a encontrar a marcação.",
-    text: "Com o dois pra lá e dois pra cá, seu corpo começa a reconhecer o tempo da música e você sabe como entrar na dança.",
+    label: "COMEÇAR",
+    title: "Você reconhece a marcação e entra na dança.",
+    text: "O dois pra lá e dois pra cá dá ao corpo um ponto de partida quando o forró começa.",
   },
   {
-    label: "CONTINUIDADE",
-    fear: "Receio de travar entre um movimento e outro",
-    title: "Você começa a conectar as bases.",
-    text: "A base frontal e os deslocamentos deixam de ser movimentos soltos e começam a formar uma dança com começo, meio e continuidade.",
+    label: "CONTINUAR",
+    title: "Você liga um movimento ao outro com mais naturalidade.",
+    text: "A base frontal e os deslocamentos ajudam você a manter a dança acontecendo.",
   },
   {
-    label: "RECURSOS",
-    fear: "Medo de errar e perder a música",
-    title: "Você ganha recursos para seguir dançando.",
-    text: "Giro simples e chuveirinho ampliam suas possibilidades. Se algo sair diferente, você já tem uma base para se reorganizar e continuar.",
+    label: "SE ALGO SAIR DIFERENTE",
+    title: "Você encontra o ritmo de novo e continua.",
+    text: "Giro simples e chuveirinho aumentam suas opções sem deixar você travado.",
   },
 ] as const;
 
@@ -109,40 +141,44 @@ export const differences = [
 
 export const teamStories = [
   {
-    title: "Júlia",
-    meta: "3 anos de GFB · monitora",
-    text: "Cheguei achando que seria a única pessoa sem experiência. Hoje, ajudo quem entra com o mesmo frio na barriga.",
+    title: "Tailan",
+    meta: "11 anos de GFB · professor e fundador",
+    text: "Professor e fundador do Grupo Forró do Bom.",
   },
   {
-    title: "Caio",
-    meta: "4 anos de GFB · monitor",
-    text: "Eu mal conseguia ouvir a marcação da música. A prática me deu segurança e vontade de ajudar outras pessoas.",
+    title: "Sthefanie",
+    meta: "8 anos de GFB",
+    text: "",
   },
   {
-    title: "Renata",
-    meta: "2 anos de GFB · monitora",
-    text: "Comecei sozinha e fui acolhida pela turma. Nas aulas, quero que cada pessoa sinta essa mesma tranquilidade.",
+    title: "Luinne",
+    meta: "8 anos de GFB",
+    text: "",
+  },
+  {
+    title: "Karine",
+    meta: "3 anos de GFB",
+    text: "",
   },
 ] as const;
 
 export const plans = [
   {
     name: "Para conhecer o GFB",
-    role: "Porta de entrada",
+    role: "Primeiro passo",
     price: "R$ 39",
     cadence: "primeira aula",
-    benefit: "Descubra que você também consegue dançar.",
+    benefit: "Experimente o método e conheça a turma.",
     items: [
-      "Primeira aula de uma nova turma",
-      "Experiência com o método e o ambiente do GFB",
-      "Valor integralmente convertido em crédito na matrícula",
-      "Com +R$ 40, você garante o mês de aulas para continuar se desenvolvendo na dança",
+      "Primeira aula no início de uma nova turma",
+      "O valor vira crédito se você decidir continuar",
     ],
     cta: "Quero conhecer",
-    badge: "COMECE POR AQUI",
+    badge: "CONHEÇA O GFB",
+    entry: true,
     recommended: false,
     acceleration: false,
-    note: "",
+    note: "Se continuar, por mais R$ 40 você garante o primeiro mês no Essencial.",
   },
   {
     name: "Essencial GFB",
@@ -159,6 +195,7 @@ export const plans = [
     ],
     cta: "Escolher Essencial",
     badge: "O MAIS ESCOLHIDO",
+    entry: false,
     recommended: true,
     acceleration: false,
     note: "A rotina certa para evoluir sem precisar fazer duas aulas por semana.",
@@ -180,6 +217,7 @@ export const plans = [
     note: "A aula particular é um benefício inicial, não uma aula mensal.",
     cta: "Escolher Plus",
     badge: "MAIS PRÁTICA",
+    entry: false,
     recommended: false,
     acceleration: true,
   },
@@ -189,17 +227,17 @@ export const testimonialThemes = [
   {
     title: "Mariana",
     role: "aluna iniciante",
-    text: "Eu cheguei sozinha e achei que ia ficar perdida. Na primeira aula percebi que todo mundo estava ali para aprender. Quando dancei uma música inteira, saí sorrindo.",
+    text: "Conheci o GFB por uma amiga que já fazia aula. Fui sozinha, bem sem jeito mesmo. O Tailan explicou com calma e, no fim, eu já estava dançando com a turma.",
   },
   {
     title: "Lucas",
     role: "aluno GFB",
-    text: "Eu tinha vergonha de errar e ficava duro quando começava o forró. Com as aulas, fui entendendo o ritmo e hoje consigo aproveitar a dança sem pensar em cada passo.",
+    text: "Eu acompanhava o trabalho do Tailan pelo Instagram e demorei um tempo para criar coragem. Quando fui, vi mais gente começando do zero. Isso me deixou bem mais à vontade.",
   },
   {
     title: "Camila",
     role: "aluna GFB",
-    text: "O que mais me surpreendeu foi me sentir parte da turma tão rápido. Além de aprender a dançar, encontrei pessoas com quem gosto de estar.",
+    text: "Cheguei ao GFB por indicação de uma colega. Achei que fosse só fazer aula, mas comecei a conhecer gente e a sair para dançar também. Foi acontecendo sem pressão.",
   },
 ] as const;
 

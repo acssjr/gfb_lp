@@ -8,9 +8,9 @@ export function TeamSection() {
   return (
     <section className={styles.teamSection} aria-labelledby="team-title">
       <SectionHeading
-        kicker="MONITORES"
-        title="Eles também começaram do zero."
-        text="Quem hoje orienta de perto também conhece a coragem que existe no primeiro passo."
+        kicker="PROFESSORES"
+        title="Quem acompanha você nas aulas."
+        text="Hoje, Tailan, Sthefanie, Luinne e Karine formam a equipe de professores do GFB."
         id="team-title"
       />
       <div className={styles.teamFeature}>
@@ -26,7 +26,7 @@ export function TeamSection() {
               <span>{String(index + 1).padStart(2, "0")}</span>
               <h3>{story.title}</h3>
               <strong className={styles.teamMeta}>{story.meta}</strong>
-              <p>{story.text}</p>
+              {story.text ? <p>{story.text}</p> : null}
             </article>
           ))}
         </div>

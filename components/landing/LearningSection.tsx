@@ -13,7 +13,7 @@ export function LearningSection() {
     if (!autoplay || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(
       () => setActive((current) => (current + 1) % learningItems.length),
-      4800,
+      7000,
     );
     return () => window.clearInterval(timer);
   }, [autoplay]);
@@ -31,9 +31,8 @@ export function LearningSection() {
           Em um mês, você já começa a combinar ritmo, bases e movimentos.
         </h2>
         <p>
-          Nas primeiras semanas, você aprende a reconhecer a marcação, sustentar as bases e
-          combinar os movimentos iniciais. Cada aula acrescenta uma resposta prática para os
-          receios de quem está começando.
+          Cada slide mostra um avanço prático das primeiras semanas. Use as setas e leia no seu
+          tempo.
         </p>
       </div>
 
@@ -70,10 +69,6 @@ export function LearningSection() {
                   <span>/ {String(learningItems.length).padStart(2, "0")}</span>
                 </div>
                 <div>
-                  <div className={styles.learningFear}>
-                    <span>Receio que começa a ficar para trás</span>
-                    <strong>{item.fear}</strong>
-                  </div>
                   <p>{item.label}</p>
                   <h3>{item.title}</h3>
                   <p>{item.text}</p>

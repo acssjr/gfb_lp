@@ -3,7 +3,7 @@ import styles from "@/components/landing/Landing.module.css";
 
 export function ProofSection() {
   return (
-    <section className={styles.proofSection} aria-label="Experiência do Grupo Forró do Bom" data-proof>
+    <section id="prova" className={styles.proofSection} aria-label="Experiência do Grupo Forró do Bom" data-proof>
       <div className={styles.proofHeading}>
         <p className={styles.proofLabel} data-proof-label>O GFB em dois números</p>
         <span className={styles.proofRule} aria-hidden="true" data-proof-rule />
@@ -16,10 +16,10 @@ export function ProofSection() {
           <span data-stat-label>fazendo gente dançar.</span>
         </p>
         <p data-stat>
-          <strong aria-label="mais de 500 alunos">
-            <span aria-hidden="true" data-proof-value>+ de 500</span>
+          <strong aria-label="mais de 3 mil pessoas">
+            <span aria-hidden="true" data-proof-value>+ de 3.000</span>
           </strong>
-          <span data-stat-label>alunos formados.</span>
+          <span data-stat-label>pessoas já passaram pelo GFB.</span>
         </p>
       </div>
       <span className={styles.proofOrbit} aria-hidden="true" data-proof-orbit>

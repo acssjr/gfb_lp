@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { LandingPage } from "@/components/landing/LandingPage";
 
 describe("LandingPage", () => {
@@ -12,7 +12,7 @@ describe("LandingPage", () => {
       screen.getByRole("heading", { name: "Você também pode dançar forró." }),
     ).toBeInTheDocument();
     expect(screen.getByText("fazendo gente dançar.")).toBeInTheDocument();
-    expect(screen.getByText("alunos formados.")).toBeInTheDocument();
+    expect(screen.getByText("pessoas já passaram pelo GFB.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Para conhecer o GFB" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Essencial GFB" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "GFB Plus" })).toBeInTheDocument();
@@ -59,7 +59,9 @@ describe("LandingPage", () => {
       }),
     ).toBeInTheDocument();
     expect(container.querySelector("[data-learning-carousel]")).toBeInTheDocument();
-    expect(screen.getByText(/medo de ficar parado quando a música começa/i)).toBeInTheDocument();
+    expect(screen.getByText(/você reconhece a marcação e entra na dança/i)).toBeInTheDocument();
+    expect(container.querySelector("[data-learning-fear]")).not.toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/perder a música|receio que começa/i);
     expect(container.textContent).not.toMatch(/não é sobre/i);
 
     await user.click(screen.getByRole("button", { name: "Próximo resultado" }));
@@ -75,16 +77,66 @@ describe("LandingPage", () => {
 
     const carousel = container.querySelector("[data-atmosphere-carousel]");
     expect(carousel).toBeInTheDocument();
-    expect(carousel?.querySelectorAll("[data-atmosphere-slide]")).toHaveLength(4);
+    expect(carousel?.querySelectorAll("[data-atmosphere-slide]")).toHaveLength(6);
 
-    await user.click(screen.getByRole("button", { name: "Próxima foto" }));
-    expect(screen.getByRole("button", { name: "Mostrar foto 2" })).toHaveAttribute(
+    await user.click(screen.getByRole("button", { name: "Próximo registro" }));
+    expect(screen.getByRole("button", { name: "Mostrar registro 2" })).toHaveAttribute(
       "aria-current",
       "true",
     );
   });
 
-  it("recommends Essencial and positions Plus as the acceleration option", () => {
+  it("uses named real GFB media without eagerly loading inactive videos", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<LandingPage />);
+
+    const teamPhoto = screen.getByRole("img", {
+      name: /equipe de professores do grupo forró do bom/i,
+    });
+    expect(teamPhoto.getAttribute("src")).toContain("equipe-professores-gfb.webp");
+
+    const videos = Array.from(
+      container.querySelectorAll<HTMLVideoElement>("[data-atmosphere-video]"),
+    );
+    expect(videos).toHaveLength(3);
+    videos.forEach((video) => {
+      expect(video).toHaveAttribute("preload", "none");
+      expect(video).toHaveAttribute("playsinline");
+      expect(video.muted).toBe(true);
+      expect(video.querySelector("source")).not.toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Próximo registro" }));
+    const activeVideo = container.querySelector<HTMLVideoElement>(
+      '[data-atmosphere-slide][data-active="true"] [data-atmosphere-video]',
+    );
+    expect(activeVideo?.querySelector("source")).toHaveAttribute(
+      "src",
+      "/media/gfb/comunidade-gfb-encontro-silencioso.mp4",
+    );
+
+    const mediaFiles = [
+      "public/images/gfb/equipe-professores-gfb.webp",
+      "public/images/gfb/comunidade-gfb-confraternizacao.webp",
+      "public/media/gfb/comunidade-gfb-encontro-silencioso.mp4",
+      "public/media/gfb/comunidade-gfb-encontro-poster.webp",
+      "public/media/gfb/turma-iniciante-em-movimento-silencioso.mp4",
+      "public/media/gfb/turma-iniciante-em-movimento-poster.webp",
+      "public/media/gfb/aula-em-movimento-reel-silencioso.mp4",
+      "public/media/gfb/aula-em-movimento-reel-poster.webp",
+      "public/images/gfb/historia-gfb-uefs-2017.webp",
+      "public/images/gfb/comunidade-gfb-evento-2024.webp",
+      "public/images/gfb/turma-gfb-encontro-01.webp",
+      "public/images/gfb/turma-gfb-registro-2022.webp",
+    ];
+
+    mediaFiles.forEach((path) => expect(existsSync(path)).toBe(true));
+    expect(statSync(mediaFiles[2]).size).toBeLessThan(2_000_000);
+    expect(statSync(mediaFiles[4]).size).toBeLessThan(5_000_000);
+    expect(statSync(mediaFiles[6]).size).toBeLessThan(4_000_000);
+  });
+
+  it("presents pricing in a natural entry, essential, and acceleration order", () => {
     const { container } = render(<LandingPage />);
 
     expect(screen.getByText("O MAIS ESCOLHIDO")).toBeInTheDocument();
@@ -95,9 +147,49 @@ describe("LandingPage", () => {
     expect(recommended).toHaveTextContent("Essencial GFB");
     expect(recommended).toHaveTextContent("O MAIS ESCOLHIDO");
     expect(recommended).toHaveTextContent("Acompanhamento da evolução no ritmo da turma");
+    expect(recommended).not.toHaveAttribute("data-mobile-priority");
+
+    const cards = [...container.querySelectorAll("[data-price-card]")];
+    expect(cards).toHaveLength(3);
+    expect(cards[0]).toHaveAttribute("data-entry-plan", "true");
+    expect(cards[0]).toHaveTextContent("Para conhecer o GFB");
+    expect(cards[0]).toHaveTextContent("Experimente o método e conheça a turma");
+    expect(cards[0]).toHaveTextContent(
+      "Se continuar, por mais R$ 40 você garante o primeiro mês no Essencial",
+    );
+    expect(cards[1]).toHaveTextContent("Essencial GFB");
+    expect(cards[2]).toHaveTextContent("GFB Plus");
+    expect(container.querySelector("[data-mobile-priority]")).not.toBeInTheDocument();
+    expect(readFileSync("components/landing/Landing.module.css", "utf8")).not.toMatch(
+      /\[data-mobile-priority="true"\][\s\S]*order:\s*-1/,
+    );
     expect(recommended).not.toHaveTextContent("Escolha entre quinta");
     expect(screen.getByText(/a aula inicial abre a porta/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/você escolhe o plano e conversa com a equipe pelo WhatsApp/i),
+    ).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/Se continuar, os R\$ 39 viram crédito/i);
+  });
+
+  it("presents the current four-person teaching team", () => {
+    render(<LandingPage />);
+
+    expect(screen.getByText("PROFESSORES")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Tailan" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Sthefanie" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Luinne" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Karine" })).toBeInTheDocument();
+    expect(screen.getByText(/11 anos de GFB · professor e fundador/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/8 anos de GFB/i)).toHaveLength(2);
+    expect(screen.getByText(/3 anos de GFB/i)).toBeInTheDocument();
+  });
+
+  it("uses conversational simulated testimonials with a concrete discovery moment", () => {
+    render(<LandingPage />);
+
+    expect(screen.getByText(/conheci o GFB por uma amiga/i)).toBeInTheDocument();
+    expect(screen.getByText(/acompanhava o trabalho do Tailan pelo Instagram/i)).toBeInTheDocument();
+    expect(screen.getByText(/cheguei ao GFB por indicação de uma colega/i)).toBeInTheDocument();
   });
 
   it("uses a stronger waitlist invitation and practical pre-class questions", () => {
@@ -123,7 +215,8 @@ describe("LandingPage", () => {
     expect(container.querySelectorAll("[data-proof-value]")).toHaveLength(2);
     expect(container.querySelector("[data-count-target]")).not.toBeInTheDocument();
     expect(screen.getByText("11 anos")).toBeInTheDocument();
-    expect(screen.getByText("+ de 500")).toBeInTheDocument();
+    expect(screen.getByText("+ de 3.000")).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/\+ de 500/);
   });
 
   it("exposes a sequential narrative for the three beginner steps", () => {
@@ -232,6 +325,56 @@ describe("LandingPage", () => {
     expect(container.querySelector("[data-hero-stamp]")).toHaveTextContent(
       "11 anos de história",
     );
+  });
+
+  it("presents the GFB origin story and uses a real class image in the hero", () => {
+    const { container } = render(<LandingPage />);
+
+    expect(
+      screen.getByRole("heading", {
+        name: /de nove pessoas na uefs a uma escola que faz feira dançar/i,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/nasceu em junho de 2015, na uefs/i)).toBeInTheDocument();
+    expect(screen.getByText(/mais de 3 mil pessoas já passaram pelo gfb/i)).toBeInTheDocument();
+    expect(screen.getByText("HISTÓRIA DO GFB")).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/atualmente contamos com aproximadamente 200/i);
+    expect(container.textContent).not.toMatch(/9 pessoas no começo/i);
+
+    const heroImage = container.querySelector<HTMLImageElement>("#inicio img");
+    expect(heroImage?.getAttribute("src")).toContain("turma-gfb-registro-2022.webp");
+    expect(existsSync("public/images/gfb/turma-gfb-registro-2022.webp")).toBe(true);
+    expect(screen.getByText("Dá para se imaginar aqui no meio.")).toBeInTheDocument();
+    expect(
+      container.querySelector("#quem-e-o-gfb img")?.getAttribute("src"),
+    ).toContain("historia-gfb-uefs-2017.webp");
+    const historyImage = container.querySelector("#quem-e-o-gfb img");
+    const legacyText = screen.getByText(/mais de 3 mil pessoas já passaram pelo gfb/i);
+    expect(
+      historyImage &&
+        Boolean(historyImage.compareDocumentPosition(legacyText) & Node.DOCUMENT_POSITION_FOLLOWING),
+    ).toBe(true);
+  });
+
+  it("adapts the atmosphere stage to portrait Reels and loads only the active video", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<LandingPage />);
+    const carousel = container.querySelector("[data-atmosphere-carousel]");
+
+    expect(carousel?.querySelectorAll("[data-atmosphere-slide]")).toHaveLength(6);
+    expect(
+      carousel?.querySelectorAll(
+        '[data-atmosphere-slide][data-media-orientation="portrait"]',
+      ),
+    ).toHaveLength(3);
+    expect(carousel?.querySelectorAll("[data-atmosphere-video]")).toHaveLength(3);
+
+    await user.click(screen.getByRole("button", { name: "Mostrar registro 6" }));
+    expect(carousel).toHaveAttribute("data-active-format", "portrait");
+    expect(
+      carousel?.querySelector('[data-active="true"] source'),
+    ).toHaveAttribute("src", "/media/gfb/aula-em-movimento-reel-silencioso.mp4");
+    expect(carousel?.querySelectorAll("source")).toHaveLength(1);
   });
 
   it("keeps the horizontal header logo transparent", () => {

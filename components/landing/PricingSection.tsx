@@ -18,6 +18,10 @@ export function PricingSection() {
         text="A aula inicial abre a porta. Para continuar, o Essencial reúne o que a maioria das pessoas precisa para ganhar segurança sem pesar no mês."
         id="pricing-title"
       />
+      <p className={styles.pricingDecisionNote}>
+        Você escolhe o plano e conversa com a equipe pelo WhatsApp. O pagamento não acontece
+        nesta página.
+      </p>
 
       <div className={styles.pricingGrid}>
         {plans.map((plan, index) => (
@@ -25,8 +29,11 @@ export function PricingSection() {
             key={plan.name}
             className={`${styles.priceCard} ${
               plan.recommended ? styles.featuredPlan : ""
-            } ${plan.acceleration ? styles.plusPlan : ""}`}
+            } ${plan.acceleration ? styles.plusPlan : ""} ${
+              plan.entry ? styles.entryPlan : ""
+            }`}
             data-price-card
+            data-entry-plan={plan.entry ? "true" : undefined}
             data-recommended-plan={plan.recommended ? "true" : undefined}
           >
             <p className={styles.planBadge} data-plan-badge>

@@ -9,8 +9,8 @@ export function TestimonialsSection() {
     <section className={styles.testimonialsSection} aria-labelledby="testimonials-title">
       <SectionHeading
         kicker="QUEM JÁ COMEÇOU"
-        title="A dança muda quando você se permite começar."
-        text="Histórias de quem chegou com insegurança, encontrou acolhimento e passou a viver o forró de outro jeito."
+        title="Como foi chegar ao GFB."
+        text="Relatos sobre a primeira aula, o contato com a escola e as pessoas encontradas no caminho."
         id="testimonials-title"
         inverse
       />
