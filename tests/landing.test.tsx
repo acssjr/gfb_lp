@@ -215,6 +215,27 @@ describe("LandingPage", () => {
     expect(screen.getByText("PERGUNTAS FREQUENTES")).toBeInTheDocument();
   });
 
+  it("renders the complete weekly timetable recovered from the production deployment", () => {
+    const { container } = render(<LandingPage />);
+
+    const timetable = container.querySelector("#horarios");
+    expect(timetable).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Forró cabe na sua semana." }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("table", {
+        name: "Horários semanais das turmas do Grupo Forró do Bom",
+      }),
+    ).toBeInTheDocument();
+    expect(timetable?.querySelectorAll("tbody tr")).toHaveLength(5);
+    expect(timetable).toHaveTextContent("Segunda-feira19h30—21h30Avançado");
+    expect(timetable).toHaveTextContent("Quinta-feira19h30—21h30Iniciante");
+    expect(timetable).toHaveTextContent(
+      "Sábado14h00—15h30Iniciante15h30—17h00Básico17h00—18h30Intermediário",
+    );
+  });
+
   it("uses one responsive depth ScrollTrigger instead of recreating one per image", () => {
     const animationSource = readFileSync("components/landing/AnimatedLanding.tsx", "utf8");
 

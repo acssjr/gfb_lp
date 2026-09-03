@@ -795,6 +795,7 @@
 .sectionHeading h2,
 .learningHeader h2,
 .levelingIntro h2,
+.scheduleHeader h2,
 .cohortSection h2,
 .locationCopy h2,
 .faqIntro h2,
@@ -816,6 +817,7 @@
 .sectionLead,
 .learningHeader > p:last-child,
 .levelingIntro > p,
+.scheduleHeader > p,
 .cohortCopy > p,
 .locationCopy > p,
 .faqIntro > p {
@@ -1953,6 +1955,193 @@
   width: 1rem;
 }
 
+.scheduleSection {
+  padding: clamp(4rem, 9vw, 8rem) var(--page-padding);
+  color: var(--brown);
+  background: var(--paper);
+}
+
+.scheduleHeader {
+  display: grid;
+  gap: 1.25rem;
+  margin-bottom: clamp(2.25rem, 5vw, 4rem);
+}
+
+.scheduleHeader > div {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.scheduleHeader h2 {
+  max-width: 9ch;
+}
+
+.scheduleCadence {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 42rem;
+  margin-bottom: 1.25rem;
+}
+
+.scheduleCadence::before {
+  position: absolute;
+  top: 1rem;
+  right: 12%;
+  left: 12%;
+  height: 2px;
+  background: var(--orange);
+  content: "";
+}
+
+.scheduleCadence span {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
+}
+
+.scheduleCadence strong {
+  display: grid;
+  width: 2rem;
+  aspect-ratio: 1;
+  place-items: center;
+  color: var(--cream);
+  background: var(--orange);
+  border: 2px solid var(--brown);
+  border-radius: 50%;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.scheduleCadence small {
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.scheduleTableFrame {
+  border: 2px solid var(--brown);
+  box-shadow: 0.65rem 0.65rem 0 var(--yellow);
+}
+
+.scheduleTable {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.scheduleTable caption {
+  padding: 0.75rem 1rem;
+  color: var(--yellow);
+  background: var(--brown);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.scheduleTable thead {
+  color: var(--cream);
+  background: var(--brown-soft);
+}
+
+.scheduleTable th,
+.scheduleTable td {
+  padding: clamp(0.8rem, 2.2vw, 1.35rem);
+  border-right: 1px solid rgb(43 26 14 / 34%);
+  border-bottom: 1px solid rgb(43 26 14 / 34%);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.scheduleTable th:last-child,
+.scheduleTable td:last-child {
+  border-right: 0;
+}
+
+.scheduleTable tbody:last-of-type tr:last-child > * {
+  border-bottom: 0;
+}
+
+.scheduleTable thead th {
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scheduleTable tbody th {
+  width: 30%;
+  background: var(--cream);
+  font-size: clamp(0.92rem, 2vw, 1.12rem);
+  font-weight: 800;
+}
+
+.scheduleTable tbody tr:nth-child(even) td {
+  background: rgb(233 207 170 / 28%);
+}
+
+.scheduleTime {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: clamp(0.88rem, 2vw, 1.06rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.scheduleLevel {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  padding: 0.35rem 0.6rem;
+  border: 2px solid var(--brown);
+  font-size: clamp(0.72rem, 1.8vw, 0.88rem);
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.scheduleLevelBeginner {
+  color: var(--cream);
+  background: var(--orange);
+}
+
+.scheduleLevelBasic {
+  color: var(--brown);
+  background: var(--yellow);
+}
+
+.scheduleLevelIntermediate {
+  color: var(--cream);
+  background: var(--brown);
+}
+
+.scheduleLevelAdvanced {
+  color: var(--cream);
+  background: var(--brown-soft);
+  box-shadow: inset 0 -0.22rem 0 var(--orange);
+}
+
+.scheduleLocationNote {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 1rem clamp(0.8rem, 2.2vw, 1.35rem);
+  color: var(--cream);
+  background: var(--orange);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.scheduleLocationNote span {
+  color: var(--yellow);
+  font-size: 0.7rem;
+}
+
 .cohortSection {
   display: grid;
   gap: 2rem;
@@ -2537,6 +2726,26 @@
     gap: 0.35rem;
   }
 
+  .scheduleTable th,
+  .scheduleTable td {
+    padding: 0.8rem 0.55rem;
+  }
+
+  .scheduleTable th:first-child {
+    width: 28%;
+  }
+
+  .scheduleTime {
+    flex-wrap: nowrap;
+    gap: 0.16rem;
+    font-size: 0.82rem;
+  }
+
+  .scheduleLevel {
+    padding-inline: 0.42rem;
+    font-size: 0.69rem;
+  }
+
   .levelingDialog {
     width: calc(100% - 0.75rem);
     max-height: calc(100dvh - 0.5rem);
@@ -2789,6 +2998,15 @@
     grid-template-columns: minmax(0, 0.8fr) minmax(24rem, 1.2fr);
   }
 
+  .scheduleHeader {
+    grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
+    align-items: end;
+  }
+
+  .scheduleCadence {
+    margin-left: auto;
+  }
+
   .cohortSection {
     grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.8fr);
     align-items: center;
@@ -2854,6 +3072,7 @@
   .pricingSection,
   .testimonialsSection,
   .levelingSection,
+  .scheduleSection,
   .cohortSection,
   .faqSection,
   .finalCtaSection,

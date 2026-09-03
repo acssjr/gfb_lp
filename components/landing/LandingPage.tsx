@@ -14,6 +14,7 @@ import { MobileConversionBar } from "@/components/landing/MobileConversionBar";
 import { PricingSection } from "@/components/landing/PricingSection";
 import { ProofSection } from "@/components/landing/ProofSection";
 import { RecognitionSection } from "@/components/landing/RecognitionSection";
+import { ScheduleSection } from "@/components/landing/ScheduleSection";
 import { SiteFooter } from "@/components/landing/SiteFooter";
 import { SiteHeader } from "@/components/landing/SiteHeader";
 import { TeamSection } from "@/components/landing/TeamSection";
@@ -41,6 +42,7 @@ export function LandingPage() {
         <PricingSection />
         <TestimonialsSection />
         <LevelingSection />
+        <ScheduleSection />
         <CohortSection />
         <LocationSection />
         <FaqSection />

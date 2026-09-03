@@ -98,6 +98,32 @@ export const beginnerSteps = [
   },
 ] as const;
 
+export const weeklySchedule = [
+  {
+    day: "Segunda-feira",
+    shortDay: "SEG",
+    classes: [
+      { start: "19:30", end: "21:30", level: "Avançado" },
+    ],
+  },
+  {
+    day: "Quinta-feira",
+    shortDay: "QUI",
+    classes: [
+      { start: "19:30", end: "21:30", level: "Iniciante" },
+    ],
+  },
+  {
+    day: "Sábado",
+    shortDay: "SÁB",
+    classes: [
+      { start: "14:00", end: "15:30", level: "Iniciante" },
+      { start: "15:30", end: "17:00", level: "Básico" },
+      { start: "17:00", end: "18:30", level: "Intermediário" },
+    ],
+  },
+] as const;
+
 export const learningItems = [
   {
     label: "COMEÇAR",
