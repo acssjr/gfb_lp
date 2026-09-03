@@ -27,17 +27,27 @@ A seção passa a explicar o mecanismo da experiência: bases, progressão da tu
 - Manter o selo dentro da largura visível, incluindo sua animação orbital.
 - Preservar a composição atual em telas a partir de 600 px.
 
-## Legendas dos vídeos verticais
+## Legendas de todos os cards da galeria
 
-- Usar uma única coluna em slides 9:16.
-- Ocultar o texto de apoio nos slides verticais em telas menores que 600 px.
-- Centralizar a legenda principal e fazê-la ocupar toda a largura disponível.
-- Manter a legenda principal em uma linha com tamanho responsivo que não ultrapasse o slide em 430 px.
-- Não alterar as legendas de imagens horizontais e quadradas.
+- Cada foto ou vídeo terá somente uma frase visível, sem texto de apoio.
+- As seis frases cumprem papéis diferentes: presença na cidade, convivência, permanência, começo pelas bases, turma e orientação.
+- A redação usa palavras concretas ligadas ao registro mostrado, sem adjetivos promocionais ou promessas que a imagem não sustenta.
+- No mobile, a frase permanece centralizada e em uma linha sempre que couber na largura do card.
+
+Frases, na ordem da galeria:
+
+1. “O forró também ocupa a cidade”
+2. “Gente que dança junto”
+3. “Gente que continua por perto”
+4. “A turma começa pelas bases”
+5. “Uma turma para dançar junto”
+6. “Professores e monitores por perto”
 
 ## Validação
 
 - Confirmar a nova copy e a ausência dos textos substituídos.
 - Confirmar que a hero mantém a foto centralizada e o selo à direita no mobile.
-- Confirmar que as legendas 9:16 ficam centralizadas e sem quebra em 430 px.
+- Confirmar que nenhum card renderiza texto de apoio.
+- Confirmar as seis frases aprovadas na ordem da galeria.
+- Confirmar que as frases ficam centralizadas e legíveis em 430 px.
 - Executar testes, lint e build de produção.
