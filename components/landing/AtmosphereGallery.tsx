@@ -20,6 +20,8 @@ export function AtmosphereGallery() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const pointerStart = useRef<number | null>(null);
+  const loopFrame = atmosphereFrames[0];
+  const loopAsset = visualAssets[loopFrame.asset];
 
   function select(index: number, fromInteraction = true) {
     if (fromInteraction) setAutoplay(false);
@@ -56,6 +58,32 @@ export function AtmosphereGallery() {
     }, 5200);
     return () => window.clearInterval(timer);
   }, [autoplay, inView, reducedMotion]);
+
+  useEffect(() => {
+    const portraitLayout = window.matchMedia("(max-width: 599px) and (orientation: portrait)");
+    const keepActiveFrameVisible = () => {
+      const section = sectionRef.current;
+      const activeSlide = section?.querySelector<HTMLElement>('[data-atmosphere-slide][data-active="true"]');
+      if (!section || !activeSlide) return;
+
+      const sectionBox = section.getBoundingClientRect();
+      if (sectionBox.bottom <= 0 || sectionBox.top >= window.innerHeight) return;
+
+      window.requestAnimationFrame(() => {
+        activeSlide.scrollIntoView({
+          block: "center",
+          behavior: reducedMotion ? "auto" : "smooth",
+        });
+      });
+    };
+
+    portraitLayout.addEventListener("change", keepActiveFrameVisible);
+    window.addEventListener("orientationchange", keepActiveFrameVisible);
+    return () => {
+      portraitLayout.removeEventListener("change", keepActiveFrameVisible);
+      window.removeEventListener("orientationchange", keepActiveFrameVisible);
+    };
+  }, [reducedMotion]);
 
   useGSAP(
     () => {
@@ -154,8 +182,8 @@ export function AtmosphereGallery() {
       <div className={styles.atmosphereTopline}>
         <SectionHeading
           kicker="POR DENTRO DO GFB"
-          title="A aula tem movimento, troca e gente por perto."
-          text="Uma aula viva, com orientação próxima, trocas de pares e espaço para cada pessoa encontrar o próprio movimento."
+          title="As aulas começam pelas bases e avançam com a desenvoltura da turma."
+          text="Os professores e monitores orientam você de perto. Nas trocas de pares, dá para praticar sem ficar perdido."
           id="atmosphere-title"
         />
         <p className={styles.atmosphereCounter} aria-live="polite">
@@ -238,11 +266,40 @@ export function AtmosphereGallery() {
                   </div>
                   <figcaption>
                     <strong>{frame.label}</strong>
-                    <span>{frame.kind === "video" ? frame.caption : asset?.caption}</span>
                   </figcaption>
                 </figure>
               );
             })}
+            <figure
+              className={`${styles.atmosphereSlide} ${styles.atmosphereLoopPreview}`}
+              data-atmosphere-loop-preview
+              data-media-orientation={loopFrame.orientation}
+              aria-hidden="true"
+            >
+              <div
+                className={styles.atmosphereImageFrame}
+                data-media-kind={loopFrame.kind}
+                data-media-orientation={loopFrame.orientation}
+              >
+                <Image
+                  src={loopAsset.src}
+                  alt=""
+                  fill
+                  loading="lazy"
+                  sizes="(max-width: 767px) 84vw, 68vw"
+                  style={{
+                    objectPosition:
+                      "position" in loopAsset && typeof loopAsset.position === "string"
+                        ? loopAsset.position
+                        : undefined,
+                  }}
+                />
+                <span aria-hidden="true">01</span>
+              </div>
+              <figcaption>
+                <strong>{loopFrame.label}</strong>
+              </figcaption>
+            </figure>
           </div>
         </div>
 

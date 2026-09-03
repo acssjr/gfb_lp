@@ -31,8 +31,8 @@ export function LearningSection() {
           Em um mês, você já começa a combinar ritmo, bases e movimentos.
         </h2>
         <p>
-          Cada slide mostra um avanço prático das primeiras semanas. Use as setas e leia no seu
-          tempo.
+          Quando a música começa, você encontra um ponto de partida, liga um movimento ao outro e
+          sabe como voltar se algo sair diferente.
         </p>
       </div>
 

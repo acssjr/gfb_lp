@@ -9,13 +9,39 @@ describe("LandingPage", () => {
     render(<LandingPage />);
 
     expect(
-      screen.getByRole("heading", { name: "Você também pode dançar forró." }),
+      screen.getByRole("heading", { name: "Aprenda forró começando do zero." }),
     ).toBeInTheDocument();
+    expect(screen.getByText("Você não precisa saber dançar e nem levar um par.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "QUERO APRENDER" })).toBeInTheDocument();
     expect(screen.getByText("fazendo gente dançar.")).toBeInTheDocument();
     expect(screen.getByText("pessoas já passaram pelo GFB.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Para conhecer o GFB" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Essencial GFB" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "GFB Plus" })).toBeInTheDocument();
+  });
+
+  it("keeps the hero emphasis subtle and the offer on separate lines without extra CTA copy", () => {
+    const { container } = render(<LandingPage />);
+    const hero = container.querySelector("#inicio");
+    const highlights = hero?.querySelectorAll("h1 span");
+    const css = readFileSync("components/landing/Landing.module.css", "utf8");
+
+    expect(highlights).toHaveLength(2);
+    expect(highlights?.[0]).toHaveTextContent("forró");
+    expect(highlights?.[1]).toHaveTextContent("do zero");
+    const zeroHighlight = hero?.querySelector('h1 span[class*="heroZero"]');
+    expect(zeroHighlight).toHaveTextContent("do zero.");
+    expect(
+      screen.getByRole("heading", { name: "Aprenda forró começando do zero." }),
+    ).toBeInTheDocument();
+    const offer = screen.getByText("Primeira aula por R$ 39.").closest("p");
+    expect(offer?.querySelector("br")).toBeInTheDocument();
+    expect(offer).toHaveTextContent("Se você decidir continuar, esse valor vira crédito na sua matrícula.");
+    expect(screen.getByText("crédito na sua matrícula.").tagName).toBe("STRONG");
+    expect(hero).not.toHaveTextContent("Você fala com a equipe pelo WhatsApp. Sem pagamento agora.");
+    expect(css).toMatch(/\.heroZero\s*\{[\s\S]*margin-top:\s*0\.16em/);
+    expect(css).toMatch(/\.heroZero\s*\{[\s\S]*color:\s*var\(--yellow\)[\s\S]*background:\s*var\(--brown\)/);
+    expect(css).toMatch(/\.heroZero:hover\s*\{[\s\S]*color:\s*var\(--brown\)[\s\S]*background:\s*transparent/);
   });
 
   it("renders complete editorial content without placeholder disclosures", () => {
@@ -52,6 +78,7 @@ describe("LandingPage", () => {
   it("presents one-month outcomes as an accessible carousel", async () => {
     const user = userEvent.setup();
     const { container } = render(<LandingPage />);
+    const css = readFileSync("components/landing/Landing.module.css", "utf8");
 
     expect(
       screen.getByRole("heading", {
@@ -63,6 +90,15 @@ describe("LandingPage", () => {
     expect(container.querySelector("[data-learning-fear]")).not.toBeInTheDocument();
     expect(container.textContent).not.toMatch(/perder a música|receio que começa/i);
     expect(container.textContent).not.toMatch(/não é sobre/i);
+    expect(
+      screen.getByText(
+        "Quando a música começa, você encontra um ponto de partida, liga um movimento ao outro e sabe como voltar se algo sair diferente.",
+      ),
+    ).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/cada slide mostra/i);
+    expect(css).toMatch(/\.learningSlide\s*\{[\s\S]*min-height:\s*clamp\(18rem, 30vw, 22rem\)/);
+    expect(css).toMatch(/\.learningSlide\s*\{[\s\S]*grid-template-rows:\s*auto auto/);
+    expect(css).toMatch(/\.learningSlide\s*\{[\s\S]*align-content:\s*start/);
 
     await user.click(screen.getByRole("button", { name: "Próximo resultado" }));
     expect(screen.getByRole("button", { name: "Mostrar resultado 2" })).toHaveAttribute(
@@ -78,12 +114,37 @@ describe("LandingPage", () => {
     const carousel = container.querySelector("[data-atmosphere-carousel]");
     expect(carousel).toBeInTheDocument();
     expect(carousel?.querySelectorAll("[data-atmosphere-slide]")).toHaveLength(6);
+    const loopPreview = carousel?.querySelector("[data-atmosphere-loop-preview]");
+    expect(loopPreview).toBeInTheDocument();
+    expect(loopPreview).toHaveAttribute("aria-hidden", "true");
+    expect(loopPreview).toHaveTextContent("O forró também ocupa a cidade");
 
     await user.click(screen.getByRole("button", { name: "Próximo registro" }));
     expect(screen.getByRole("button", { name: "Mostrar registro 2" })).toHaveAttribute(
       "aria-current",
       "true",
     );
+  });
+
+  it("shows one concise phrase on each atmosphere card", () => {
+    const { container } = render(<LandingPage />);
+    const carousel = container.querySelector("[data-atmosphere-carousel]");
+    const phrases = [
+      "O forró também ocupa a cidade",
+      "Gente que dança junto",
+      "Gente que continua por perto",
+      "A turma começa pelas bases",
+      "Uma turma para dançar junto",
+      "Orientação de perto na prática",
+    ];
+
+    const renderedPhrases = Array.from(
+      carousel?.querySelectorAll("[data-atmosphere-slide] figcaption strong") ?? [],
+      (caption) => caption.textContent,
+    );
+
+    expect(renderedPhrases).toEqual(phrases);
+    expect(carousel?.querySelector("[data-atmosphere-support]")).not.toBeInTheDocument();
   });
 
   it("uses named real GFB media without eagerly loading inactive videos", async () => {
@@ -159,6 +220,13 @@ describe("LandingPage", () => {
     );
     expect(cards[1]).toHaveTextContent("Essencial GFB");
     expect(cards[2]).toHaveTextContent("GFB Plus");
+    expect(cards[2]).toHaveTextContent("R$ 179");
+    expect(cards[2]).toHaveTextContent("Um acompanhamento individualizado por mês");
+    expect(cards[2]).toHaveTextContent(
+      "Professor e horário do acompanhamento são definidos conforme disponibilidade e combinados previamente. Consulte condições.",
+    );
+    expect(cards[2]).not.toHaveTextContent("R$ 159");
+    expect(cards[2]).not.toHaveTextContent(/aula particular inicial/i);
     expect(container.querySelector("[data-mobile-priority]")).not.toBeInTheDocument();
     expect(readFileSync("components/landing/Landing.module.css", "utf8")).not.toMatch(
       /\[data-mobile-priority="true"\][\s\S]*order:\s*-1/,
@@ -185,11 +253,13 @@ describe("LandingPage", () => {
   });
 
   it("uses conversational simulated testimonials with a concrete discovery moment", () => {
-    render(<LandingPage />);
+    const { container } = render(<LandingPage />);
 
-    expect(screen.getByText(/conheci o GFB por uma amiga/i)).toBeInTheDocument();
-    expect(screen.getByText(/acompanhava o trabalho do Tailan pelo Instagram/i)).toBeInTheDocument();
-    expect(screen.getByText(/cheguei ao GFB por indicação de uma colega/i)).toBeInTheDocument();
+    expect(screen.getByText(/uma amiga me chamou para conhecer o GFB/i)).toBeInTheDocument();
+    expect(screen.getByText(/vi alguns vídeos da escola no Instagram/i)).toBeInTheDocument();
+    expect(screen.getByText(/cheguei por indicação de uma colega do trabalho/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Como foi chegar ao GFB." }).closest("section"))
+      .not.toHaveTextContent(/Tailan/i);
   });
 
   it("uses a stronger waitlist invitation and practical pre-class questions", () => {
@@ -266,12 +336,26 @@ describe("LandingPage", () => {
     expect(screen.getByRole("heading", { name: "Escolha o dia" })).toBeInTheDocument();
   });
 
-  it("combines the map with a three-image preview of the class venue", () => {
+  it("keeps the location focused on address, route and map without the old photo gallery", () => {
     const { container } = render(<LandingPage />);
 
-    const gallery = container.querySelector("[data-location-gallery]");
-    expect(gallery).toBeInTheDocument();
-    expect(gallery?.querySelectorAll("img")).toHaveLength(3);
+    expect(container.querySelector("[data-location-gallery]")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Ver rota" })).toBeInTheDocument();
+    expect(
+      screen.getByTitle("Mapa da Escola Criativa em Feira de Santana"),
+    ).toBeInTheDocument();
+  });
+
+  it("uses the footer text color as the exact logo tint", () => {
+    const { container } = render(<LandingPage />);
+    const css = readFileSync("components/landing/Landing.module.css", "utf8");
+
+    expect(container.querySelector("[data-footer-logo]")).toHaveAccessibleName(
+      "Grupo Forró do Bom",
+    );
+    expect(css).toMatch(/\.footerLogo\s*\{[\s\S]*background:\s*var\(--sand\)/);
+    expect(css).toMatch(/\.footerLogo\s*\{[\s\S]*margin-inline-start:\s*-1\.75rem/);
+    expect(css).toMatch(/\.footerBrand p\s*\{[\s\S]*color:\s*var\(--sand\)/);
   });
 
   it("opens and closes FAQ items with aria-expanded", async () => {
@@ -352,8 +436,8 @@ describe("LandingPage", () => {
       "@dobomforro",
     );
     expect(container.querySelector(`header img`)?.getAttribute("src")).toContain("gfb-logo.svg");
-    expect(container.querySelector(`footer img`)?.getAttribute("src")).toContain(
-      "gfb-logo-stacked.svg",
+    expect(container.querySelector("[data-footer-logo]")).toHaveAccessibleName(
+      "Grupo Forró do Bom",
     );
   });
 
@@ -370,7 +454,7 @@ describe("LandingPage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /de nove pessoas na uefs a uma escola que faz feira dançar/i,
+        name: "O GFB começou na UEFS. Hoje, faz Feira dançar.",
       }),
     ).toBeInTheDocument();
     expect(screen.getByText(/nasceu em junho de 2015, na uefs/i)).toBeInTheDocument();
@@ -428,7 +512,38 @@ describe("LandingPage", () => {
     expect(morph).toBeInTheDocument();
     expect(morph?.querySelectorAll("[data-level-word]")).toHaveLength(4);
     expect(morph?.querySelectorAll("[data-level-char]").length).toBeGreaterThan(20);
+    expect(morph?.querySelectorAll("[data-level-badge]")).toHaveLength(4);
+    expect(morph?.querySelectorAll("[data-level-star]")).toHaveLength(11);
     expect(container.querySelector("[data-level-morph-frame]")).toBeInTheDocument();
+  });
+
+  it("includes mobile layout safeguards for dense labels and compact carousels", () => {
+    render(<LandingPage />);
+    const css = readFileSync("components/landing/Landing.module.css", "utf8");
+
+    expect(
+      screen.getByRole("heading", {
+        name: "O GFB começou na UEFS. Hoje, faz Feira dançar.",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: "As aulas começam pelas bases e avançam com a desenvoltura da turma.",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Os professores e monitores orientam você de perto. Nas trocas de pares, dá para praticar sem ficar perdido.",
+      ),
+    ).toBeInTheDocument();
+    expect(css).toMatch(/\.scheduleTable col:nth-child\(3\)[\s\S]*width:\s*44%/);
+    expect(css).toMatch(/\.scheduleLevel[\s\S]*max-width:\s*100%/);
+    expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.heroVisual\s*\{[\s\S]*justify-self:\s*center/);
+    expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.heroStamp\s*\{[\s\S]*right:/);
+    expect(css).toMatch(/\.atmosphereSlide figcaption\s*\{[\s\S]*display:\s*block[\s\S]*text-align:\s*center/);
+    expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.atmosphereSlide figcaption strong[\s\S]*white-space:\s*nowrap/);
+    expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.planMeta > p:last-child[\s\S]*display:\s*none/);
+    expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.finalCtaSection[\s\S]*min-height:\s*0/);
   });
 
   it("adds complete institutional and payment information to the footer", () => {

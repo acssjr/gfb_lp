@@ -41,7 +41,7 @@ Frases, na ordem da galeria:
 3. “Gente que continua por perto”
 4. “A turma começa pelas bases”
 5. “Uma turma para dançar junto”
-6. “Professores e monitores por perto”
+6. “Orientação de perto na prática”
 
 ## Validação
 

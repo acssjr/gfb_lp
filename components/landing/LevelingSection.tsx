@@ -10,7 +10,12 @@ import { trackEvent } from "@/lib/analytics";
 import styles from "@/components/landing/Landing.module.css";
 
 const levels = ["básico", "intermediário", "avançado"] as const;
-const journeyLevels = ["iniciante", "básico", "intermediário", "avançado"] as const;
+const journeyLevels = [
+  { label: "iniciante", stars: 1 },
+  { label: "básico", stars: 2 },
+  { label: "intermediário", stars: 3 },
+  { label: "avançado", stars: 5 },
+] as const;
 const levelOptions = levels.map((value) => ({
   value,
   label: value[0].toUpperCase() + value.slice(1),
@@ -48,10 +53,12 @@ export function LevelingSection() {
           ? null
           : measurementCanvas.getContext("2d");
         const widths = words.map((word) => {
-          const computed = window.getComputedStyle(word);
-          const text = word.textContent ?? "";
+          const label = word.querySelector<HTMLElement>("[data-level-label]") ?? word;
+          const computed = window.getComputedStyle(label);
+          const text = label.textContent ?? "";
           const tracking = Number.parseFloat(computed.letterSpacing) || 0;
-          if (!measurementContext) return Math.ceil(word.offsetWidth) + 3;
+          const opticalGutter = Math.max(12, Number.parseFloat(computed.fontSize) * 0.18);
+          if (!measurementContext) return Math.ceil(label.offsetWidth + opticalGutter);
 
           measurementContext.font = [
             computed.fontStyle,
@@ -60,7 +67,9 @@ export function LevelingSection() {
             computed.fontFamily,
           ].join(" ");
 
-          return Math.ceil(measurementContext.measureText(text).width + tracking * (text.length - 1)) + 3;
+          return Math.ceil(
+            measurementContext.measureText(text).width + tracking * (text.length - 1) + opticalGutter,
+          );
         });
         media = gsap.matchMedia();
         media.add(
@@ -71,82 +80,135 @@ export function LevelingSection() {
           ({ conditions }) => {
             const reduce = Boolean(conditions?.reduce);
 
-            gsap.set(words, { autoAlpha: 0 });
-            gsap.set(words[0], { autoAlpha: 1 });
+            gsap.set(words, { autoAlpha: 0, display: "none" });
+            gsap.set(words[0], { autoAlpha: 1, display: "grid" });
             gsap.set(frame, { width: widths[0] });
             gsap.set(markers, { scaleX: 0, transformOrigin: "left center" });
             gsap.set(markers[0], { scaleX: 1 });
 
             if (reduce) return;
 
+            const maxWidth = Math.max(...widths);
+            const widthRatios = widths.map((width) => width / maxWidth);
             const activeTimeline = gsap.timeline({ repeat: -1 });
             timeline = activeTimeline;
+
+            gsap.set(frame, {
+              width: maxWidth,
+              scaleX: widthRatios[0],
+              transformOrigin: "left center",
+            });
+            gsap.set(words, { transformOrigin: "left center" });
+            gsap.set(words[0], { scaleX: 1 / widthRatios[0] });
 
             words.forEach((word, index) => {
               const nextIndex = (index + 1) % words.length;
               const nextWord = words[nextIndex];
               const currentChars = word.querySelectorAll<HTMLElement>("[data-level-char]");
               const nextChars = nextWord.querySelectorAll<HTMLElement>("[data-level-char]");
-              const transitionAt = `level-${index}`;
-              const frameScale = widths[index] / widths[nextIndex];
-              const wordCounterScale = 1 / frameScale;
+              const currentBadge = word.querySelector<HTMLElement>("[data-level-badge]");
+              const nextBadge = nextWord.querySelector<HTMLElement>("[data-level-badge]");
+              const currentStars = currentBadge?.querySelectorAll<HTMLElement>("[data-level-star]");
+              const nextStars = nextBadge?.querySelectorAll<HTMLElement>("[data-level-star]");
+              const levelAt = `level-${index}`;
+              const exitAt = `exit-${index}`;
+              const resizeAt = `resize-${index}`;
+              const enterAt = `enter-${index}`;
 
               activeTimeline
-                .to(markers[index], { scaleX: 1, duration: 1.15, ease: "none" })
-                .addLabel(transitionAt)
-                .set(nextWord, { autoAlpha: 1 }, transitionAt)
-                .set(frame, {
-                  width: widths[nextIndex],
-                  scaleX: frameScale,
-                  transformOrigin: "left center",
-                }, transitionAt)
-                .set([word, nextWord], {
-                  scaleX: wordCounterScale,
-                  transformOrigin: "left center",
-                }, transitionAt)
-                .set(nextChars, {
+                .addLabel(levelAt)
+                .set(words, { autoAlpha: 0, display: "none", zIndex: 0 }, levelAt)
+                .set(word, {
+                  autoAlpha: 1,
+                  display: "grid",
+                  zIndex: 2,
+                  scaleX: 1 / widthRatios[index],
+                }, levelAt)
+                .set(frame, { scaleX: widthRatios[index] }, levelAt)
+                .set(currentChars, {
+                  autoAlpha: 1,
+                  yPercent: 0,
+                  rotationX: 0,
+                  rotationZ: 0,
+                  scale: 1,
+                }, levelAt)
+                .set(currentBadge, { autoAlpha: 1, y: 0, scale: 1 }, levelAt)
+                .set(currentStars ?? [], { autoAlpha: 1, rotation: 0, scale: 1 }, levelAt)
+                .set(markers, { scaleX: 0 }, levelAt)
+                .to(markers[index], { scaleX: 1, duration: 2.6, ease: "none" })
+                .addLabel(exitAt)
+                .to(currentBadge, {
                   autoAlpha: 0,
-                  rotationY: 58,
-                  scale: 0.94,
-                  x: (characterIndex) => {
-                    const center = (nextChars.length - 1) / 2;
-                    return (characterIndex - center) * 7;
-                  },
-                }, transitionAt)
-                .to(frame, {
-                  scaleX: 1,
-                  duration: 0.5,
-                  ease: "power3.inOut",
-                }, transitionAt)
-                .to([word, nextWord], {
-                  scaleX: 1,
-                  duration: 0.5,
-                  ease: "power3.inOut",
-                }, transitionAt)
+                  y: -8,
+                  scale: 0.92,
+                  duration: 0.24,
+                  ease: "power2.in",
+                }, exitAt)
                 .to(currentChars, {
                   autoAlpha: 0,
-                  rotationY: -48,
-                  scale: 0.96,
-                  x: (characterIndex) => {
-                    const center = (currentChars.length - 1) / 2;
-                    return (center - characterIndex) * 5;
-                  },
-                  duration: 0.28,
-                  ease: "power3.inOut",
-                  stagger: { each: 0.018, from: "center" },
-                }, transitionAt)
+                  yPercent: -115,
+                  rotationX: 72,
+                  rotationZ: (characterIndex) => (characterIndex % 2 === 0 ? -3 : 3),
+                  scale: 0.92,
+                  duration: 0.34,
+                  ease: "power3.in",
+                  stagger: { each: 0.022, from: "edges" },
+                }, `${exitAt}+=0.02`)
+                .set(word, { autoAlpha: 0, display: "none", zIndex: 0 })
+                .set(nextWord, {
+                  autoAlpha: 1,
+                  display: "grid",
+                  zIndex: 2,
+                  scaleX: 1 / widthRatios[index],
+                })
+                .set(nextChars, {
+                  autoAlpha: 0,
+                  yPercent: 120,
+                  rotationX: -78,
+                  rotationZ: (characterIndex) => (characterIndex % 2 === 0 ? 4 : -4),
+                  scale: 0.9,
+                  transformOrigin: "50% 100%",
+                })
+                .set(nextBadge, { autoAlpha: 0, y: 10, scale: 0.86 })
+                .set(nextStars ?? [], { autoAlpha: 0, rotation: -35, scale: 0 })
+                .addLabel(resizeAt)
+                .to(frame, {
+                  scaleX: widthRatios[nextIndex],
+                  duration: 0.58,
+                  ease: "expo.inOut",
+                }, resizeAt)
+                .to(nextWord, {
+                  scaleX: 1 / widthRatios[nextIndex],
+                  duration: 0.58,
+                  ease: "expo.inOut",
+                }, resizeAt)
+                .addLabel(enterAt, `${resizeAt}+=0.26`)
                 .to(nextChars, {
                   autoAlpha: 1,
-                  rotationY: 0,
+                  yPercent: 0,
+                  rotationX: 0,
+                  rotationZ: 0,
                   scale: 1,
-                  x: 0,
-                  duration: 0.48,
-                  ease: "power3.out",
-                  stagger: { each: 0.018, from: "center" },
-                }, `${transitionAt}+=0.08`)
-                .set(word, { autoAlpha: 0 })
-                .set(markers[index], { scaleX: 0 })
-                .set(markers[nextIndex], { scaleX: 0 });
+                  duration: 0.56,
+                  ease: "back.out(1.35)",
+                  stagger: { each: 0.026, from: "center" },
+                }, enterAt)
+                .to(nextBadge, {
+                  autoAlpha: 1,
+                  y: 0,
+                  scale: 1,
+                  duration: 0.34,
+                  ease: "back.out(1.7)",
+                }, `${enterAt}+=0.2`)
+                .to(nextStars ?? [], {
+                  autoAlpha: 1,
+                  rotation: 0,
+                  scale: 1,
+                  duration: 0.3,
+                  ease: "back.out(2.4)",
+                  stagger: 0.06,
+                }, `${enterAt}+=0.3`)
+                .set(markers[index], { scaleX: 0 });
             });
           },
         );
@@ -305,20 +367,30 @@ export function LevelingSection() {
         <p>Encontre a turma que acompanha a sua dança</p>
         <div className={styles.levelingWordStage} aria-hidden="true">
           <div className={styles.levelingWordMorph} data-level-morph data-level-morph-frame>
-            {journeyLevels.map((item, index) => (
-              <strong key={item} data-level-word data-level-first={index === 0 ? "true" : undefined}>
-                {Array.from(item).map((character, characterIndex) => (
-                  <span key={`${item}-${characterIndex}`} data-level-char>
-                    {character}
-                  </span>
-                ))}
+            {journeyLevels.map(({ label, stars }, index) => (
+              <strong key={label} data-level-word data-level-first={index === 0 ? "true" : undefined}>
+                <span className={styles.levelingLevelName} data-level-label>
+                  {Array.from(label).map((character, characterIndex) => (
+                    <span key={`${label}-${characterIndex}`} data-level-char>
+                      {character}
+                    </span>
+                  ))}
+                </span>
+                <span className={styles.levelingLevelBadge} data-level-badge data-level-stars={stars}>
+                  {Array.from({ length: stars }, (_, starIndex) => (
+                    <span key={starIndex} data-level-star aria-hidden="true">★</span>
+                  ))}
+                </span>
               </strong>
             ))}
           </div>
         </div>
-        <p className={styles.srOnly}>Níveis: iniciante, básico, intermediário e avançado.</p>
+        <p className={styles.srOnly}>
+          Níveis: iniciante com uma estrela, básico com duas, intermediário com três e
+          avançado com cinco estrelas.
+        </p>
         <div className={styles.levelingMarkers} aria-hidden="true">
-          {journeyLevels.map((item) => <span key={item} data-level-marker />)}
+          {journeyLevels.map(({ label }) => <span key={label} data-level-marker />)}
         </div>
       </div>
 

@@ -41,6 +41,11 @@ export function ScheduleSection() {
       <div className={styles.scheduleTableFrame} data-reveal>
         <table className={styles.scheduleTable}>
           <caption>Horários semanais das turmas do Grupo Forró do Bom</caption>
+          <colgroup>
+            <col />
+            <col />
+            <col />
+          </colgroup>
           <thead>
             <tr>
               <th scope="col">Dia</th>

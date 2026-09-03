@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import styles from "@/components/landing/Landing.module.css";
 
@@ -6,11 +5,11 @@ export function SiteFooter() {
   return (
     <footer className={styles.siteFooter}>
       <div className={styles.footerBrand}>
-        <Image
-          src="/brand/gfb-logo-stacked.svg"
-          alt="Grupo Forró do Bom"
-          width={1536}
-          height={1024}
+        <span
+          className={styles.footerLogo}
+          role="img"
+          aria-label="Grupo Forró do Bom"
+          data-footer-logo
         />
         <p>Forró para começar, continuar e encontrar o seu lugar na dança.</p>
       </div>

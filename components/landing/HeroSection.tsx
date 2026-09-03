@@ -19,14 +19,17 @@ export function HeroSection() {
           <span>Feira de Santana, BA</span>
         </p>
         <h1 id="hero-title" data-hero-item>
-          Você também pode dançar forró.
+          Aprenda <span className={styles.heroEmphasis}>forró</span> começando{" "}
+          <span className={styles.heroZero}>do zero.</span>
         </h1>
         <p className={styles.heroSubtitle} data-hero-item>
-          Você não precisa saber dançar nem levar um par.
+          Você não precisa saber dançar e nem levar um par.
         </p>
         <p className={styles.heroOffer} data-hero-item>
-          <strong>Primeira aula por R$ 39.</strong> Se você decidir continuar, esse valor
-          vira crédito na sua matrícula.
+          <strong>Primeira aula por R$ 39.</strong>
+          <br />
+          Se você decidir continuar, esse valor vira{" "}
+          <strong className={styles.heroCredit}>crédito na sua matrícula.</strong>
         </p>
         <div className={styles.heroActions} data-hero-item>
           <WhatsAppLink
@@ -34,7 +37,7 @@ export function HeroSection() {
             message={whatsappMessages.beginner}
             tracking={{ ctaLocation: "hero", userIntent: "beginner" }}
           >
-            Quero começar
+            QUERO APRENDER
           </WhatsAppLink>
           <a
             className={styles.dancerRoute}
@@ -50,9 +53,6 @@ export function HeroSection() {
             </svg>
           </a>
         </div>
-        <p className={styles.heroClickTrigger} data-hero-item>
-          Você fala com a equipe pelo WhatsApp. Sem pagamento agora.
-        </p>
       </div>
 
       <div className={styles.heroVisual} data-hero-item data-hero-visual>

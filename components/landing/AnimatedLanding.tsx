@@ -255,28 +255,6 @@ export function AnimatedLanding({ children }: AnimatedLandingProps) {
           gsap
             .timeline({
               scrollTrigger: {
-                trigger: "[data-location-gallery]",
-                start: "top 84%",
-                once: true,
-              },
-              defaults: { ease: "power3.out" },
-            })
-            .from("[data-location-photo]", {
-              y: 34,
-              rotation: (index) => [-1.5, 0.8, -0.6][index] ?? 0,
-              autoAlpha: 0,
-              stagger: 0.08,
-              duration: 0.72,
-            })
-            .from(
-              "[data-location-photo] img",
-              { scale: 1.14, stagger: 0.08, duration: 0.92 },
-              "<",
-            );
-
-          gsap
-            .timeline({
-              scrollTrigger: {
                 trigger: "[data-final-cta]",
                 start: "top 78%",
                 once: true,

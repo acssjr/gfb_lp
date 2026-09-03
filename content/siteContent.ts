@@ -24,7 +24,7 @@ export const recognitionItems = [
 
 export const gfbHistory = {
   kicker: "HISTÓRIA DO GFB",
-  title: "De nove pessoas na UEFS a uma escola que faz Feira dançar.",
+  title: "O GFB começou na UEFS. Hoje, faz Feira dançar.",
   origin:
     "O Grupo Forró do Bom nasceu em junho de 2015, na UEFS, por iniciativa de Tailan Cavalcante. O que começou com nove pessoas brincando de dançar cresceu até se tornar uma escola reconhecida em Feira de Santana e região.",
   legacy:
@@ -42,7 +42,7 @@ export const atmosphereFrames = [
   {
     kind: "video",
     orientation: "portrait",
-    label: "Uma comunidade em movimento",
+    label: "Gente que dança junto",
     src: "/media/gfb/comunidade-gfb-encontro-silencioso.mp4",
     poster: "/media/gfb/comunidade-gfb-encontro-poster.webp",
     alt: "Encontro com alunos e equipe do Grupo Forró do Bom",
@@ -57,7 +57,7 @@ export const atmosphereFrames = [
   {
     kind: "video",
     orientation: "portrait",
-    label: "A turma iniciante em movimento",
+    label: "A turma começa pelas bases",
     src: "/media/gfb/turma-iniciante-em-movimento-silencioso.mp4",
     poster: "/media/gfb/turma-iniciante-em-movimento-poster.webp",
     alt: "Registro em vídeo de uma turma iniciante do Grupo Forró do Bom",
@@ -66,13 +66,13 @@ export const atmosphereFrames = [
   {
     kind: "image",
     orientation: "landscape",
-    label: "Uma turma que vira encontro",
+    label: "Uma turma para dançar junto",
     asset: "arrival",
   },
   {
     kind: "video",
     orientation: "portrait",
-    label: "A dança acontece de verdade",
+    label: "Orientação de perto na prática",
     src: "/media/gfb/aula-em-movimento-reel-silencioso.mp4",
     poster: "/media/gfb/aula-em-movimento-reel-poster.webp",
     alt: "Alunos do Grupo Forró do Bom dançando durante uma aula",
@@ -229,18 +229,19 @@ export const plans = [
   {
     name: "GFB Plus",
     role: "Para acelerar",
-    price: "R$ 159",
+    price: "R$ 179",
     cadence: "por mês",
     benefit: "Para quem quer acelerar a evolução com mais prática e atenção individual.",
     items: [
       "Tudo o que está no Essencial",
       "Participação nas turmas de quinta e sábado",
       "Duas oportunidades semanais para praticar, corrigir e fixar",
-      "Uma aula particular inicial para agendar",
+      "Um acompanhamento individualizado por mês",
       "Observação individual da movimentação",
       "Correções pontuais de postura, pisada, ritmo e estética",
     ],
-    note: "A aula particular é um benefício inicial, não uma aula mensal.",
+    note:
+      "Professor e horário do acompanhamento são definidos conforme disponibilidade e combinados previamente. Consulte condições.",
     cta: "Escolher Plus",
     badge: "MAIS PRÁTICA",
     entry: false,
@@ -253,17 +254,17 @@ export const testimonialThemes = [
   {
     title: "Mariana",
     role: "aluna iniciante",
-    text: "Conheci o GFB por uma amiga que já fazia aula. Fui sozinha, bem sem jeito mesmo. O Tailan explicou com calma e, no fim, eu já estava dançando com a turma.",
+    text: "Uma amiga me chamou para conhecer o GFB. Fui sozinha e com aquela vergonha do primeiro dia, mas a turma me recebeu bem. Quando a aula terminou, eu já queria voltar.",
   },
   {
     title: "Lucas",
     role: "aluno GFB",
-    text: "Eu acompanhava o trabalho do Tailan pelo Instagram e demorei um tempo para criar coragem. Quando fui, vi mais gente começando do zero. Isso me deixou bem mais à vontade.",
+    text: "Vi alguns vídeos da escola no Instagram e resolvi experimentar. O que me deixou tranquilo foi ver que tinha mais gente aprendendo e que errar fazia parte da aula.",
   },
   {
     title: "Camila",
     role: "aluna GFB",
-    text: "Cheguei ao GFB por indicação de uma colega. Achei que fosse só fazer aula, mas comecei a conhecer gente e a sair para dançar também. Foi acontecendo sem pressão.",
+    text: "Cheguei por indicação de uma colega do trabalho. Depois das primeiras aulas, comecei a aceitar convites para dançar que antes eu recusava. Hoje o forró faz parte da minha semana.",
   },
 ] as const;
 
