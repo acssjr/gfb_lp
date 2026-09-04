@@ -42,7 +42,7 @@ export const atmosphereFrames = [
   {
     kind: "video",
     orientation: "portrait",
-    label: "Gente que dança junto",
+    label: "GENTE QUE CELEBRA JUNTO",
     src: "/media/gfb/comunidade-gfb-encontro-silencioso.mp4",
     poster: "/media/gfb/comunidade-gfb-encontro-poster.webp",
     alt: "Encontro com alunos e equipe do Grupo Forró do Bom",
@@ -277,9 +277,9 @@ export const levelingSteps = [
 
 export const faqItems = [
   {
-    question: "E se eu achar que não tenho ritmo?",
+    question: "Preciso já ter ritmo para começar?",
     answer:
-      "Ritmo também se aprende. A turma começa pelas bases, repete o necessário e avança conforme a desenvoltura das pessoas, não conforme uma pressa externa.",
+      "Não. Ritmo também se aprende. A turma começa pelas bases, repete o necessário e avança conforme a desenvoltura das pessoas.",
   },
   {
     question: "Vou precisar dançar com pessoas que não conheço?",

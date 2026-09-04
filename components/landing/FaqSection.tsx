@@ -6,7 +6,7 @@ import { trackEvent } from "@/lib/analytics";
 import styles from "@/components/landing/Landing.module.css";
 
 export function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const panelRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useLayoutEffect(() => {

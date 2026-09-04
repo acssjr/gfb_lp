@@ -15,8 +15,7 @@ export function HeroSection() {
     >
       <div className={styles.heroCopy}>
         <p className={styles.eyebrow} data-hero-item>
-          <span>Escola de forró em</span>
-          <span>Feira de Santana, BA</span>
+          <span>ESCOLA DE FORRÓ EM FEIRA DE SANTANA - BA</span>
         </p>
         <h1 id="hero-title" data-hero-item>
           Aprenda <span className={styles.heroEmphasis}>forró</span> começando{" "}

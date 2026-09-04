@@ -21,6 +21,14 @@ describe("LandingPage", () => {
     expect(screen.getByRole("heading", { name: "GFB Plus" })).toBeInTheDocument();
   });
 
+  it("uses one continuous location line in the hero", () => {
+    const { container } = render(<LandingPage />);
+    const eyebrow = container.querySelector("#inicio p");
+
+    expect(eyebrow).toHaveTextContent("ESCOLA DE FORRÓ EM FEIRA DE SANTANA - BA");
+    expect(eyebrow?.querySelectorAll("span")).toHaveLength(1);
+  });
+
   it("uses the brand name only where it identifies the institution, method or plans", () => {
     const { container } = render(<LandingPage />);
 
@@ -168,7 +176,7 @@ describe("LandingPage", () => {
     const carousel = container.querySelector("[data-atmosphere-carousel]");
     const phrases = [
       "O forró também ocupa a cidade",
-      "Gente que dança junto",
+      "GENTE QUE CELEBRA JUNTO",
       "Gente que continua por perto",
       "A turma começa pelas bases",
       "Uma turma para dançar junto",
@@ -182,6 +190,15 @@ describe("LandingPage", () => {
 
     expect(renderedPhrases).toEqual(phrases);
     expect(carousel?.querySelector("[data-atmosphere-support]")).not.toBeInTheDocument();
+  });
+
+  it("starts every FAQ item closed and uses a natural opening question", () => {
+    render(<LandingPage />);
+
+    expect(screen.getByText("Preciso já ter ritmo para começar?")).toBeInTheDocument();
+    screen.getAllByRole("button", { expanded: false }).forEach((button) => {
+      expect(button).toHaveAttribute("aria-expanded", "false");
+    });
   });
 
   it("uses named real GFB media without eagerly loading inactive videos", async () => {
@@ -313,7 +330,7 @@ describe("LandingPage", () => {
     expect(screen.getByRole("radio", { name: /Quinta-feira às 19h30/i })).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: /Sábado às 14h/i })).toBeInTheDocument();
     expect(screen.getByText("Estamos ansiosos para ter você conosco.")).toBeInTheDocument();
-    expect(screen.getByText("E se eu achar que não tenho ritmo?")).toBeInTheDocument();
+    expect(screen.getByText("Preciso já ter ritmo para começar?")).toBeInTheDocument();
     expect(
       screen.getByText("Que roupa e calçado eu uso na primeira aula?"),
     ).toBeInTheDocument();
@@ -581,6 +598,25 @@ describe("LandingPage", () => {
     expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.atmosphereSlide figcaption strong[\s\S]*white-space:\s*nowrap/);
     expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.planMeta > p:last-child[\s\S]*display:\s*none/);
     expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.finalCtaSection[\s\S]*min-height:\s*0/);
+  });
+
+  it("keeps the hero compact and pricing readable on tablet widths", () => {
+    const css = readFileSync("components/landing/Landing.module.css", "utf8");
+    expect(css).toMatch(/\.priceCard\s*\{[\s\S]*?container-type:\s*inline-size;/);
+    expect(css).toMatch(/\.planPrice\s*\{[\s\S]*?flex-wrap:\s*wrap;/);
+    expect(css).toMatch(/\.planPrice strong\s*\{[\s\S]*?18cqi/);
+    expect(css).toMatch(
+      /@media \(min-width: 768px\) and \(max-width: 1099px\)[\s\S]*?\.heroSection\s*\{[\s\S]*?min-height:\s*0;/,
+    );
+    expect(css).toMatch(
+      /@media \(min-width: 768px\) and \(max-width: 1099px\)[\s\S]*?\.pricingGrid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,/,
+    );
+    expect(css).toMatch(
+      /@media \(min-width: 768px\) and \(max-width: 1099px\)[\s\S]*?\.plusPlan\s*\{[\s\S]*?grid-column:\s*1\s*\/\s*-1;/,
+    );
+    expect(css).toMatch(
+      /@media \(min-width: 1100px\)[\s\S]*?\.pricingGrid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3,/,
+    );
   });
 
   it("keeps mobile carousel controls inside narrow screens", () => {
