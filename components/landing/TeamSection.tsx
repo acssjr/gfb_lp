@@ -10,7 +10,7 @@ export function TeamSection() {
       <SectionHeading
         kicker="PROFESSORES"
         title="Quem acompanha você nas aulas."
-        text="Hoje, Tailan, Sthefanie, Luinne e Karine formam a equipe de professores do GFB."
+        text="Hoje, Tailan, Sthefanie, Luinne e Karine acompanham nossas turmas."
         id="team-title"
       />
       <div className={styles.teamFeature}>

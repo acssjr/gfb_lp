@@ -6,7 +6,7 @@ export function WhyGfbSection() {
   return (
     <section className={styles.whySection} aria-labelledby="why-title">
       <SectionHeading
-        kicker="POR QUE O GFB"
+        kicker="POR QUE APRENDER AQUI"
         title="Uma escola que faz sua dança se destacar."
         id="why-title"
         inverse

@@ -5,7 +5,7 @@ export function ProofSection() {
   return (
     <section id="prova" className={styles.proofSection} aria-label="Experiência do Grupo Forró do Bom" data-proof>
       <div className={styles.proofHeading}>
-        <p className={styles.proofLabel} data-proof-label>O GFB em dois números</p>
+        <p className={styles.proofLabel} data-proof-label>Nossa história em dois números</p>
         <span className={styles.proofRule} aria-hidden="true" data-proof-rule />
       </div>
       <div className={styles.proofGrid}>
@@ -19,7 +19,7 @@ export function ProofSection() {
           <strong aria-label="mais de 3 mil pessoas">
             <span aria-hidden="true" data-proof-value>+ de 3.000</span>
           </strong>
-          <span data-stat-label>pessoas já passaram pelo GFB.</span>
+          <span data-stat-label>pessoas já passaram por aqui.</span>
         </p>
       </div>
       <span className={styles.proofOrbit} aria-hidden="true" data-proof-orbit>

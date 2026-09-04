@@ -1,0 +1,184 @@
+<style>
+  :root {
+    --gfb-yellow: #f6c300;
+    --gfb-cream: #fff2db;
+    --gfb-brown: #2b1a0e;
+    --gfb-orange: #c93b18;
+  }
+
+  .comparison-copy {
+    max-width: 780px;
+    margin-bottom: 1.5rem;
+  }
+
+  .headline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .hero-option {
+    min-height: 390px;
+    padding: 1.35rem;
+    color: var(--gfb-brown);
+    background: var(--gfb-yellow);
+    border: 2px solid var(--gfb-brown);
+    cursor: pointer;
+  }
+
+  .hero-option .eyebrow {
+    margin: 0 0 2rem;
+    padding-bottom: .65rem;
+    border-bottom: 1px solid var(--gfb-brown);
+    font-size: .68rem;
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+
+  .hero-option h3 {
+    max-width: 9ch;
+    margin: 0;
+    color: var(--gfb-brown);
+    font-size: clamp(2.6rem, 5vw, 4.5rem);
+    font-weight: 900;
+    line-height: .88;
+    letter-spacing: -.065em;
+  }
+
+  .hero-option .forro {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--gfb-orange) 55%, transparent);
+    text-decoration-thickness: .035em;
+    text-underline-offset: .08em;
+  }
+
+  .zero {
+    display: inline-block;
+    margin-top: .08em;
+    letter-spacing: -.03em;
+    text-transform: uppercase;
+    transition: transform 220ms cubic-bezier(.2,.8,.2,1), background-color 220ms ease, color 220ms ease, box-shadow 220ms ease;
+  }
+
+  .option-a .zero {
+    position: relative;
+    z-index: 0;
+    padding: .04em .13em .09em;
+    color: var(--gfb-cream);
+  }
+
+  .option-a .zero::before {
+    position: absolute;
+    inset: .04em -.02em .02em;
+    z-index: -1;
+    background: var(--gfb-orange);
+    clip-path: polygon(2% 7%, 100% 0, 97% 92%, 0 100%);
+    content: "";
+    transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms ease;
+  }
+
+  .option-a:hover .zero::before {
+    transform: rotate(-1deg) scale(1.035);
+    box-shadow: .08em .09em 0 color-mix(in srgb, var(--gfb-brown) 24%, transparent);
+  }
+
+  .option-b .zero {
+    position: relative;
+    z-index: 0;
+    padding: .02em .08em .07em;
+  }
+
+  .option-b .zero::before {
+    position: absolute;
+    inset: 53% -.04em 4%;
+    z-index: -1;
+    background: var(--gfb-orange);
+    content: "";
+    transform: skewX(-7deg);
+    transform-origin: left center;
+    transition: inset 240ms cubic-bezier(.2,.8,.2,1), transform 240ms cubic-bezier(.2,.8,.2,1);
+  }
+
+  .option-b:hover .zero::before {
+    inset: 7% -.04em 2%;
+    transform: skewX(-3deg);
+  }
+
+  .option-b:hover .zero {
+    color: var(--gfb-cream);
+  }
+
+  .option-c .zero {
+    padding: .035em .12em .08em;
+    color: var(--gfb-brown);
+    border: .055em solid var(--gfb-brown);
+    box-shadow: .08em .08em 0 var(--gfb-orange);
+  }
+
+  .option-c:hover .zero {
+    color: var(--gfb-yellow);
+    background: var(--gfb-brown);
+    box-shadow: 0 0 0 var(--gfb-orange);
+    transform: translate(.07em, .07em);
+  }
+
+  .option-notes {
+    margin-top: 1.4rem;
+    padding-top: .85rem;
+    border-top: 1px solid color-mix(in srgb, var(--gfb-brown) 40%, transparent);
+    font-size: .82rem;
+    line-height: 1.35;
+  }
+
+  .option-notes strong {
+    display: block;
+    margin-bottom: .25rem;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    .headline-grid { grid-template-columns: 1fr; }
+    .hero-option { min-height: 340px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .zero,
+    .zero::before { transition: none !important; }
+  }
+</style>
+
+<div class="comparison-copy">
+  <p class="label">Headline da abertura</p>
+  <h2>Como “DO ZERO” deve ganhar destaque?</h2>
+  <p class="subtitle">Passe o mouse sobre cada forma. Clique na opção que mais combina com o GFB.</p>
+</div>
+
+<div class="headline-grid">
+  <article class="hero-option option-a" data-choice="a" onclick="toggleSelect(this)">
+    <p class="eyebrow">Forró para começar do zero</p>
+    <h3>Aprenda <span class="forro">forró</span> começando <span class="zero">do zero.</span></h3>
+    <div class="option-notes">
+      <strong>A · Recorte editorial</strong>
+      Forma orgânica, creme sobre laranja e um pequeno movimento ao passar o mouse.
+    </div>
+  </article>
+
+  <article class="hero-option option-b" data-choice="b" onclick="toggleSelect(this)">
+    <p class="eyebrow">Forró para começar do zero</p>
+    <h3>Aprenda <span class="forro">forró</span> começando <span class="zero">do zero.</span></h3>
+    <div class="option-notes">
+      <strong>B · Marca-texto expansivo</strong>
+      Começa como um traço e cresce atrás das palavras no hover.
+    </div>
+  </article>
+
+  <article class="hero-option option-c" data-choice="c" onclick="toggleSelect(this)">
+    <p class="eyebrow">Forró para começar do zero</p>
+    <h3>Aprenda <span class="forro">forró</span> começando <span class="zero">do zero.</span></h3>
+    <div class="option-notes">
+      <strong>C · Selo geométrico</strong>
+      Contorno mais gráfico, com inversão para marrom ao passar o mouse.
+    </div>
+  </article>
+</div>

@@ -917,6 +917,8 @@
 
 .atmosphereViewport {
   overflow: hidden;
+  overflow-anchor: none;
+  scroll-margin-top: calc(4.75rem + 1rem);
 }
 
 .atmosphereTrack {
@@ -2754,6 +2756,31 @@
 }
 
 @media (max-width: 430px) {
+  .atmosphereControls {
+    gap: 0.65rem;
+  }
+
+  .atmosphereDots {
+    flex: 1;
+    min-width: 0;
+    gap: 0.35rem;
+  }
+
+  .atmosphereDots button {
+    width: auto;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .atmosphereArrows {
+    flex: 0 0 auto;
+  }
+
+  .atmosphereArrows button {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
   .scheduleTable th,
   .scheduleTable td {
     padding: 0.8rem 0.55rem;
@@ -2768,17 +2795,17 @@
   }
 
   .scheduleTable col:nth-child(2) {
-    width: 30%;
+    width: 38%;
   }
 
   .scheduleTable col:nth-child(3) {
-    width: 44%;
+    width: 36%;
   }
 
   .scheduleTime {
     flex-wrap: nowrap;
-    gap: 0.16rem;
-    font-size: 0.82rem;
+    gap: 0.08rem;
+    font-size: 0.78rem;
   }
 
   .scheduleLevel {

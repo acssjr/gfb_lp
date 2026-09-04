@@ -9,7 +9,7 @@ export function TestimonialsSection() {
     <section className={styles.testimonialsSection} aria-labelledby="testimonials-title">
       <SectionHeading
         kicker="QUEM JÁ COMEÇOU"
-        title="Como foi chegar ao GFB."
+        title="Como foi a primeira aula."
         text="Relatos sobre a primeira aula, o contato com a escola e as pessoas encontradas no caminho."
         id="testimonials-title"
         inverse

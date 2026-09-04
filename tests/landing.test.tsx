@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { LandingPage } from "@/components/landing/LandingPage";
+import { shouldRestoreAtmospherePosition } from "@/components/landing/AtmosphereGallery";
 
 describe("LandingPage", () => {
   it("renders the approved message, trust proof and three editable plans", () => {
@@ -14,8 +15,38 @@ describe("LandingPage", () => {
     expect(screen.getByText("Você não precisa saber dançar e nem levar um par.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "QUERO APRENDER" })).toBeInTheDocument();
     expect(screen.getByText("fazendo gente dançar.")).toBeInTheDocument();
-    expect(screen.getByText("pessoas já passaram pelo GFB.")).toBeInTheDocument();
+    expect(screen.getByText("pessoas já passaram por aqui.")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Para conhecer o GFB" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Essencial GFB" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "GFB Plus" })).toBeInTheDocument();
+  });
+
+  it("uses the brand name only where it identifies the institution, method or plans", () => {
+    const { container } = render(<LandingPage />);
+
+    expect(screen.getByText(/escola de forró em/i)).toBeInTheDocument();
+    expect(screen.getByText(/nossa história em dois números/i)).toBeInTheDocument();
+    expect(screen.getByText("NOSSA HISTÓRIA")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Começamos na UEFS. Hoje, fazemos Feira dançar." }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("POR DENTRO DAS AULAS")).toBeInTheDocument();
+    expect(screen.getByText("POR QUE APRENDER AQUI")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Hoje, Tailan, Sthefanie, Luinne e Karine acompanham nossas turmas.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Como foi a primeira aula." }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/uma amiga me chamou para conhecer uma aula/i)).toBeInTheDocument();
+    expect(container.querySelector("#proxima-turma")).toHaveTextContent(
+      "A gente avisa quando a data de início da próxima turma estiver definida.",
+    );
+    expect(screen.getByRole("table")).toHaveAccessibleName("Horários semanais das turmas");
+
+    expect(screen.getAllByText(/metodologia GFB/i)).not.toHaveLength(0);
     expect(screen.getByRole("heading", { name: "Essencial GFB" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "GFB Plus" })).toBeInTheDocument();
   });
@@ -95,6 +126,12 @@ describe("LandingPage", () => {
         "Quando a música começa, você encontra um ponto de partida, liga um movimento ao outro e sabe como voltar se algo sair diferente.",
       ),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Você aprende a se reorganizar sem parar a dança quando algo não sai como esperava.",
+      ),
+    ).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/giro simples e chuveirinho/i);
     expect(container.textContent).not.toMatch(/cada slide mostra/i);
     expect(css).toMatch(/\.learningSlide\s*\{[\s\S]*min-height:\s*clamp\(18rem, 30vw, 22rem\)/);
     expect(css).toMatch(/\.learningSlide\s*\{[\s\S]*grid-template-rows:\s*auto auto/);
@@ -255,10 +292,10 @@ describe("LandingPage", () => {
   it("uses conversational simulated testimonials with a concrete discovery moment", () => {
     const { container } = render(<LandingPage />);
 
-    expect(screen.getByText(/uma amiga me chamou para conhecer o GFB/i)).toBeInTheDocument();
+    expect(screen.getByText(/uma amiga me chamou para conhecer uma aula/i)).toBeInTheDocument();
     expect(screen.getByText(/vi alguns vídeos da escola no Instagram/i)).toBeInTheDocument();
     expect(screen.getByText(/cheguei por indicação de uma colega do trabalho/i)).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Como foi chegar ao GFB." }).closest("section"))
+    expect(screen.getByRole("heading", { name: "Como foi a primeira aula." }).closest("section"))
       .not.toHaveTextContent(/Tailan/i);
   });
 
@@ -295,7 +332,7 @@ describe("LandingPage", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("table", {
-        name: "Horários semanais das turmas do Grupo Forró do Bom",
+        name: "Horários semanais das turmas",
       }),
     ).toBeInTheDocument();
     expect(timetable?.querySelectorAll("tbody tr")).toHaveLength(5);
@@ -454,12 +491,12 @@ describe("LandingPage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "O GFB começou na UEFS. Hoje, faz Feira dançar.",
+        name: "Começamos na UEFS. Hoje, fazemos Feira dançar.",
       }),
     ).toBeInTheDocument();
     expect(screen.getByText(/nasceu em junho de 2015, na uefs/i)).toBeInTheDocument();
-    expect(screen.getByText(/mais de 3 mil pessoas já passaram pelo gfb/i)).toBeInTheDocument();
-    expect(screen.getByText("HISTÓRIA DO GFB")).toBeInTheDocument();
+    expect(screen.getByText(/mais de 3 mil pessoas já passaram por aqui/i)).toBeInTheDocument();
+    expect(screen.getByText("NOSSA HISTÓRIA")).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/atualmente contamos com aproximadamente 200/i);
     expect(container.textContent).not.toMatch(/9 pessoas no começo/i);
 
@@ -471,7 +508,7 @@ describe("LandingPage", () => {
       container.querySelector("#quem-e-o-gfb img")?.getAttribute("src"),
     ).toContain("historia-gfb-uefs-2017.webp");
     const historyImage = container.querySelector("#quem-e-o-gfb img");
-    const legacyText = screen.getByText(/mais de 3 mil pessoas já passaram pelo gfb/i);
+    const legacyText = screen.getByText(/mais de 3 mil pessoas já passaram por aqui/i);
     expect(
       historyImage &&
         Boolean(historyImage.compareDocumentPosition(legacyText) & Node.DOCUMENT_POSITION_FOLLOWING),
@@ -523,7 +560,7 @@ describe("LandingPage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "O GFB começou na UEFS. Hoje, faz Feira dançar.",
+        name: "Começamos na UEFS. Hoje, fazemos Feira dançar.",
       }),
     ).toBeInTheDocument();
     expect(
@@ -536,7 +573,7 @@ describe("LandingPage", () => {
         "Os professores e monitores orientam você de perto. Nas trocas de pares, dá para praticar sem ficar perdido.",
       ),
     ).toBeInTheDocument();
-    expect(css).toMatch(/\.scheduleTable col:nth-child\(3\)[\s\S]*width:\s*44%/);
+    expect(css).toMatch(/@media \(max-width: 430px\)[\s\S]*\.scheduleTable col:nth-child\(3\)[\s\S]*width:\s*36%/);
     expect(css).toMatch(/\.scheduleLevel[\s\S]*max-width:\s*100%/);
     expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.heroVisual\s*\{[\s\S]*justify-self:\s*center/);
     expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.heroStamp\s*\{[\s\S]*right:/);
@@ -544,6 +581,44 @@ describe("LandingPage", () => {
     expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.atmosphereSlide figcaption strong[\s\S]*white-space:\s*nowrap/);
     expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.planMeta > p:last-child[\s\S]*display:\s*none/);
     expect(css).toMatch(/@media \(max-width: 599px\)[\s\S]*\.finalCtaSection[\s\S]*min-height:\s*0/);
+  });
+
+  it("keeps mobile carousel controls inside narrow screens", () => {
+    const css = readFileSync("components/landing/Landing.module.css", "utf8");
+    const mobileCss = css.slice(css.indexOf("@media (max-width: 430px)"));
+
+    expect(mobileCss).toMatch(
+      /\.atmosphereDots\s*\{[\s\S]*?flex:\s*1;[\s\S]*?min-width:\s*0;/,
+    );
+    expect(mobileCss).toMatch(
+      /\.atmosphereDots button\s*\{[\s\S]*?width:\s*auto;[\s\S]*?flex:\s*1;/,
+    );
+    expect(mobileCss).toMatch(/\.atmosphereArrows\s*\{[\s\S]*?flex:\s*0 0 auto;/);
+  });
+
+  it("restores the atmosphere position after a tall mobile slide", () => {
+    const css = readFileSync("components/landing/Landing.module.css", "utf8");
+
+    expect(shouldRestoreAtmospherePosition("portrait", "landscape", true)).toBe(true);
+    expect(shouldRestoreAtmospherePosition("portrait", "square", true)).toBe(true);
+    expect(shouldRestoreAtmospherePosition("landscape", "portrait", true)).toBe(false);
+    expect(shouldRestoreAtmospherePosition("portrait", "landscape", false)).toBe(false);
+    expect(shouldRestoreAtmospherePosition("portrait", "portrait", true)).toBe(false);
+    expect(css).toMatch(
+      /\.atmosphereViewport\s*\{[\s\S]*?scroll-margin-top:\s*calc\(4\.75rem \+ 1rem\);/,
+    );
+  });
+
+  it("keeps schedule columns separated on narrow screens", () => {
+    const css = readFileSync("components/landing/Landing.module.css", "utf8");
+    const mobileCss = css.slice(css.indexOf("@media (max-width: 430px)"));
+
+    expect(mobileCss).toMatch(/\.scheduleTable col:nth-child\(1\)\s*\{[\s\S]*?width:\s*26%;/);
+    expect(mobileCss).toMatch(/\.scheduleTable col:nth-child\(2\)\s*\{[\s\S]*?width:\s*38%;/);
+    expect(mobileCss).toMatch(/\.scheduleTable col:nth-child\(3\)\s*\{[\s\S]*?width:\s*36%;/);
+    expect(mobileCss).toMatch(
+      /\.scheduleTime\s*\{[\s\S]*?gap:\s*0\.08rem;[\s\S]*?font-size:\s*0\.78rem;/,
+    );
   });
 
   it("adds complete institutional and payment information to the footer", () => {

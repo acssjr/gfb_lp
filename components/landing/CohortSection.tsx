@@ -72,7 +72,7 @@ export function CohortSection() {
         <h2 id="cohort-title">O próximo começo pode ser o seu.</h2>
         <p>
           Escolha o horário que melhor se adapta à sua rotina e entre na lista prioritária.
-          O GFB avisa quando a data de início da próxima turma estiver definida. E não vai
+          A gente avisa quando a data de início da próxima turma estiver definida. E não vai
           demorar. ;)
         </p>
       </div>

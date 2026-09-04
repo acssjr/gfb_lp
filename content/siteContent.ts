@@ -23,12 +23,12 @@ export const recognitionItems = [
 ] as const;
 
 export const gfbHistory = {
-  kicker: "HISTÓRIA DO GFB",
-  title: "O GFB começou na UEFS. Hoje, faz Feira dançar.",
+  kicker: "NOSSA HISTÓRIA",
+  title: "Começamos na UEFS. Hoje, fazemos Feira dançar.",
   origin:
     "O Grupo Forró do Bom nasceu em junho de 2015, na UEFS, por iniciativa de Tailan Cavalcante. O que começou com nove pessoas brincando de dançar cresceu até se tornar uma escola reconhecida em Feira de Santana e região.",
   legacy:
-    "Mais de 3 mil pessoas já passaram pelo GFB. Ao longo dessa história, o grupo ajudou a formar professores e dançarinos e, em um de seus marcos, chegou a reunir aproximadamente 200 alunos ativos.",
+    "Mais de 3 mil pessoas já passaram por aqui. Ao longo dessa história, o grupo ajudou a formar professores e dançarinos e, em um de seus marcos, chegou a reunir aproximadamente 200 alunos ativos.",
   closing: "Uma história construída com gente que chegou para aprender e ficou pela dança.",
 } as const;
 
@@ -138,7 +138,7 @@ export const learningItems = [
   {
     label: "SE ALGO SAIR DIFERENTE",
     title: "Você encontra o ritmo de novo e continua.",
-    text: "Giro simples e chuveirinho aumentam suas opções sem deixar você travado.",
+    text: "Você aprende a se reorganizar sem parar a dança quando algo não sai como esperava.",
   },
 ] as const;
 
@@ -254,16 +254,16 @@ export const testimonialThemes = [
   {
     title: "Mariana",
     role: "aluna iniciante",
-    text: "Uma amiga me chamou para conhecer o GFB. Fui sozinha e com aquela vergonha do primeiro dia, mas a turma me recebeu bem. Quando a aula terminou, eu já queria voltar.",
+    text: "Uma amiga me chamou para conhecer uma aula. Fui sozinha e com aquela vergonha do primeiro dia, mas a turma me recebeu bem. Quando a aula terminou, eu já queria voltar.",
   },
   {
     title: "Lucas",
-    role: "aluno GFB",
+    role: "aluno",
     text: "Vi alguns vídeos da escola no Instagram e resolvi experimentar. O que me deixou tranquilo foi ver que tinha mais gente aprendendo e que errar fazia parte da aula.",
   },
   {
     title: "Camila",
-    role: "aluna GFB",
+    role: "aluna",
     text: "Cheguei por indicação de uma colega do trabalho. Depois das primeiras aulas, comecei a aceitar convites para dançar que antes eu recusava. Hoje o forró faz parte da minha semana.",
   },
 ] as const;

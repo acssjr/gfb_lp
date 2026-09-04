@@ -11,6 +11,16 @@ import styles from "@/components/landing/Landing.module.css";
 
 gsap.registerPlugin(useGSAP);
 
+export type AtmosphereOrientation = "landscape" | "portrait" | "square";
+
+export function shouldRestoreAtmospherePosition(
+  previous: AtmosphereOrientation,
+  next: AtmosphereOrientation,
+  mobile: boolean,
+) {
+  return mobile && previous === "portrait" && next !== "portrait";
+}
+
 export function AtmosphereGallery() {
   const [active, setActive] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
@@ -20,6 +30,9 @@ export function AtmosphereGallery() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const pointerStart = useRef<number | null>(null);
+  const previousOrientationRef = useRef<AtmosphereOrientation>(
+    atmosphereFrames[0].orientation,
+  );
   const loopFrame = atmosphereFrames[0];
   const loopAsset = visualAssets[loopFrame.asset];
 
@@ -60,18 +73,50 @@ export function AtmosphereGallery() {
   }, [autoplay, inView, reducedMotion]);
 
   useEffect(() => {
+    const nextOrientation = atmosphereFrames[active].orientation;
+    const restoreAfterResize = shouldRestoreAtmospherePosition(
+      previousOrientationRef.current,
+      nextOrientation,
+      window.matchMedia("(max-width: 599px)").matches,
+    );
+    previousOrientationRef.current = nextOrientation;
+    if (!restoreAfterResize) return;
+
+    const timer = window.setTimeout(() => {
+      const section = sectionRef.current;
+      const viewport = viewportRef.current;
+      const sectionBox = section?.getBoundingClientRect();
+      if (!section || !viewport || !sectionBox) return;
+      if (sectionBox.bottom <= 0 || sectionBox.top >= window.innerHeight) return;
+
+      const root = document.documentElement;
+      const previousScrollBehavior = root.style.scrollBehavior;
+      const headerHeight = document.querySelector("header")?.getBoundingClientRect().height ?? 0;
+      const targetTop = Math.max(
+        0,
+        window.scrollY + viewport.getBoundingClientRect().top - headerHeight - 16,
+      );
+      root.style.scrollBehavior = "auto";
+      window.scrollTo({ top: targetTop, behavior: "auto" });
+      root.style.scrollBehavior = previousScrollBehavior;
+    }, reducedMotion ? 0 : 650);
+
+    return () => window.clearTimeout(timer);
+  }, [active, reducedMotion]);
+
+  useEffect(() => {
     const portraitLayout = window.matchMedia("(max-width: 599px) and (orientation: portrait)");
     const keepActiveFrameVisible = () => {
       const section = sectionRef.current;
-      const activeSlide = section?.querySelector<HTMLElement>('[data-atmosphere-slide][data-active="true"]');
-      if (!section || !activeSlide) return;
+      const viewport = viewportRef.current;
+      if (!section || !viewport) return;
 
       const sectionBox = section.getBoundingClientRect();
       if (sectionBox.bottom <= 0 || sectionBox.top >= window.innerHeight) return;
 
       window.requestAnimationFrame(() => {
-        activeSlide.scrollIntoView({
-          block: "center",
+        viewport.scrollIntoView({
+          block: "start",
           behavior: reducedMotion ? "auto" : "smooth",
         });
       });
@@ -181,7 +226,7 @@ export function AtmosphereGallery() {
     >
       <div className={styles.atmosphereTopline}>
         <SectionHeading
-          kicker="POR DENTRO DO GFB"
+          kicker="POR DENTRO DAS AULAS"
           title="As aulas começam pelas bases e avançam com a desenvoltura da turma."
           text="Os professores e monitores orientam você de perto. Nas trocas de pares, dá para praticar sem ficar perdido."
           id="atmosphere-title"
