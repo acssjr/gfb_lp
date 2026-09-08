@@ -1,46 +1,64 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useGSAP } from "@gsap/react";
-import { Select } from "@base-ui/react/select";
-import gsap from "gsap";
+import dynamic from "next/dynamic";
+import type { Level } from "./LevelSelect";
 import { levelingSteps, whatsappMessages } from "@/content/siteContent";
 import { WhatsAppLink } from "@/components/ui/WhatsAppLink";
 import { trackEvent } from "@/lib/analytics";
 import styles from "@/components/landing/Landing.module.css";
 
-const levels = ["básico", "intermediário", "avançado"] as const;
+function SelectPlaceholder() {
+  return <>
+    <span className={styles.levelSelectLabel}>Nível pretendido</span>
+    <button type="button" className={styles.levelSelectTrigger} disabled aria-label="Carregando níveis">
+      <span className={styles.levelSelectCurrent} aria-hidden="true">Sua escolha</span>
+      <span className={styles.levelSelectValue}>Básico</span>
+      <span className={styles.levelSelectIcon}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></span>
+    </button>
+  </>;
+}
+const LevelSelect = dynamic(() => import("./LevelSelect").then((module) => module.LevelSelect), {
+  loading: SelectPlaceholder,
+});
 const journeyLevels = [
   { label: "iniciante", stars: 1 },
   { label: "básico", stars: 2 },
   { label: "intermediário", stars: 3 },
   { label: "avançado", stars: 5 },
 ] as const;
-const levelOptions = levels.map((value) => ({
-  value,
-  label: value[0].toUpperCase() + value.slice(1),
-}));
-
-gsap.registerPlugin(useGSAP);
 
 export function LevelingSection() {
   const [open, setOpen] = useState(false);
-  const [level, setLevel] = useState<(typeof levels)[number]>("básico");
+  const [level, setLevel] = useState<Level>("básico");
+  const [selectReady, setSelectReady] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const animationRef = useRef<Animation | null>(null);
   const journeyRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(
-    (context, contextSafe) => {
+  useEffect(() => {
       const root = journeyRef.current;
       if (!root) return;
 
-      let timeline: gsap.core.Timeline | undefined;
-      let media: gsap.MatchMedia | undefined;
+      let timeline: { kill: () => void; play: () => void; pause: () => void } | undefined;
+      let media: {
+        add: (
+          conditions: Record<string, string>,
+          callback: (context: { conditions?: Record<string, boolean> }) => void,
+        ) => unknown;
+        revert: () => void;
+      } | undefined;
       let cancelled = false;
+      let inView = typeof IntersectionObserver === "undefined";
+      let activation: Promise<void> | undefined;
 
-      const buildMorph = contextSafe!(() => {
+      const buildMorph = () => {
+        if (cancelled || activation) return;
+        activation = Promise.all([
+          import("gsap"),
+          document.fonts?.ready ?? Promise.resolve(),
+        ]).then(([{ default: gsap }]) => {
         if (cancelled) return;
 
         const frame = root.querySelector<HTMLElement>("[data-level-morph-frame]");
@@ -77,7 +95,7 @@ export function LevelingSection() {
             animate: "(prefers-reduced-motion: no-preference)",
             reduce: "(prefers-reduced-motion: reduce)",
           },
-          ({ conditions }) => {
+          ({ conditions }: { conditions?: Record<string, boolean> }) => {
             const reduce = Boolean(conditions?.reduce);
 
             gsap.set(words, { autoAlpha: 0, display: "none" });
@@ -90,7 +108,7 @@ export function LevelingSection() {
 
             const maxWidth = Math.max(...widths);
             const widthRatios = widths.map((width) => width / maxWidth);
-            const activeTimeline = gsap.timeline({ repeat: -1 });
+            const activeTimeline = gsap.timeline({ repeat: -1, paused: !inView });
             timeline = activeTimeline;
 
             gsap.set(frame, {
@@ -212,18 +230,28 @@ export function LevelingSection() {
             });
           },
         );
-      });
+        });
+      };
 
-      void (document.fonts?.ready ?? Promise.resolve()).then(buildMorph);
-
+      // Prepare the same choreography just before it becomes visible, then pause
+      // off-screen. Font measurements and the repeating loop need not run at load.
+      const observer = typeof IntersectionObserver === "undefined" ? undefined :
+        new IntersectionObserver(([entry]) => {
+          inView = entry.isIntersecting;
+          if (inView) setSelectReady(true);
+          if (inView && !media) buildMorph();
+          if (inView) timeline?.play();
+          else timeline?.pause();
+        }, { rootMargin: "300px 0px" });
+      observer?.observe(root);
+      if (inView) buildMorph();
       return () => {
         cancelled = true;
+        observer?.disconnect();
         timeline?.kill();
         media?.revert();
       };
-    },
-    { scope: journeyRef },
-  );
+  }, []);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -333,6 +361,7 @@ export function LevelingSection() {
   }, [open]);
 
   function openDialog() {
+    setSelectReady(true);
     setOpen(true);
     trackEvent("leveling_info_opened", { user_intent: "leveling" });
   }
@@ -430,55 +459,7 @@ export function LevelingSection() {
         <div className={styles.dialogAction}>
           <div>
             <strong>Um encontro cuidadoso, não uma prova.</strong>
-            <Select.Root
-              items={levelOptions}
-              value={level}
-              onValueChange={(value) => setLevel(value as (typeof levels)[number])}
-            >
-              <Select.Label className={styles.levelSelectLabel}>Nível pretendido</Select.Label>
-              <Select.Trigger className={styles.levelSelectTrigger}>
-                <span className={styles.levelSelectCurrent} aria-hidden="true">Sua escolha</span>
-                <Select.Value className={styles.levelSelectValue} />
-                <Select.Icon className={styles.levelSelectIcon}>
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </Select.Icon>
-              </Select.Trigger>
-              <Select.Portal container={dialogRef}>
-                <Select.Positioner
-                  className={styles.levelSelectPositioner}
-                  alignItemWithTrigger={false}
-                  align="start"
-                  sideOffset={7}
-                >
-                  <Select.Popup className={styles.levelSelectPopup} data-level-select-popup>
-                    <p className={styles.levelSelectHeading}>Onde sua dança está hoje?</p>
-                    <Select.List className={styles.levelSelectList}>
-                      {levelOptions.map((option, index) => (
-                        <Select.Item
-                          key={option.value}
-                          value={option.value}
-                          className={styles.levelSelectItem}
-                        >
-                          <span className={styles.levelSelectNumber} aria-hidden="true">
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                          <Select.ItemText className={styles.levelSelectItemText}>
-                            {option.label}
-                          </Select.ItemText>
-                          <Select.ItemIndicator className={styles.levelSelectIndicator}>
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <path d="m5 12 4 4L19 6" />
-                            </svg>
-                          </Select.ItemIndicator>
-                        </Select.Item>
-                      ))}
-                    </Select.List>
-                  </Select.Popup>
-                </Select.Positioner>
-              </Select.Portal>
-            </Select.Root>
+            {selectReady ? <LevelSelect level={level} onChange={setLevel} dialogRef={dialogRef} /> : <SelectPlaceholder />}
           </div>
           <WhatsAppLink
             className={styles.primaryButton}

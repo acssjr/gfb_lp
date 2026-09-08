@@ -361,7 +361,10 @@ describe("LandingPage", () => {
   });
 
   it("uses one responsive depth ScrollTrigger instead of recreating one per image", () => {
-    const animationSource = readFileSync("components/landing/AnimatedLanding.tsx", "utf8");
+    const animationSource = readFileSync(
+      "components/landing/LandingAnimationRuntime.tsx",
+      "utf8",
+    );
 
     expect(animationSource).toContain("const depthElements");
     expect(animationSource).toMatch(/gsap\.fromTo\(\s*depthElements,/);
@@ -449,7 +452,7 @@ describe("LandingPage", () => {
 
     expect(screen.getByRole("dialog", { name: /como funciona o nivelamento/i })).toBeVisible();
     expect(screen.getByText("Um encontro cuidadoso, não uma prova.")).toBeInTheDocument();
-    expect(screen.getByRole("combobox", { name: "Nível pretendido" })).toBeInTheDocument();
+    expect(await screen.findByRole("combobox", { name: "Nível pretendido" })).toBeInTheDocument();
     expect(screen.getAllByRole("listitem").filter((item) => item.closest("dialog"))).toHaveLength(4);
     expect(document.body).toHaveStyle({ overflow: "hidden" });
   });
@@ -466,7 +469,7 @@ describe("LandingPage", () => {
       screen.getByText(/um professor vai avaliar uma dança sua/i),
     ).toBeInTheDocument();
 
-  const trigger = screen.getByRole("combobox", { name: "Nível pretendido" });
+  const trigger = await screen.findByRole("combobox", { name: "Nível pretendido" });
   expect(trigger.tagName).toBe("BUTTON");
   await user.click(trigger);
 

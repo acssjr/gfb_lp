@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import type { ReactNode } from "react";
-import { saans } from "@/app/fonts/saans";
 import { siteConfig } from "@/config/site";
 import "@/app/globals.css";
+
+/* eslint-disable @next/next/no-css-tags -- The non-blocking supporting font sheet is intentionally activated after load. */
 
 const title = "Aula de forró em Feira de Santana | Grupo Forró do Bom";
 const description =
@@ -63,8 +64,16 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
 
   return (
     <html lang="pt-BR">
-      <body className={`${saans.className} ${saans.variable}`}>
+      <head>
+        <link rel="preload" href="/fonts/Saans-TRIAL-Regular-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/Saans-TRIAL-Bold-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="/fonts/supporting.css" media="print" id="supporting-fonts" />
+      </head>
+      <body>
         {children}
+        <Script id="activate-supporting-fonts" strategy="lazyOnload">
+          {`document.getElementById('supporting-fonts').media = 'all';`}
+        </Script>
         {measurementId ? (
           <>
             <Script

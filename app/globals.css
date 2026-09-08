@@ -1,3 +1,41 @@
+@font-face {
+  font-family: "GFB Saans";
+  src: url("/fonts/Saans-TRIAL-Regular-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0300-036F, U+2000-206F, U+20AC, U+2190-22FF, U+2500-27FF;
+}
+
+@font-face {
+  font-family: "GFB Saans Fallback";
+  src: local("Arial");
+  font-weight: 400 699;
+  ascent-override: 91.04%;
+  descent-override: 22.51%;
+  line-gap-override: 0%;
+  size-adjust: 99.96%;
+}
+
+@font-face {
+  font-family: "GFB Saans Fallback";
+  src: local("Arial");
+  font-weight: 700 900;
+  ascent-override: 87.71%;
+  descent-override: 21.69%;
+  line-gap-override: 0%;
+  size-adjust: 103.75%;
+}
+
+@font-face {
+  font-family: "GFB Saans";
+  src: url("/fonts/Saans-TRIAL-Bold-latin.woff2") format("woff2");
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0300-036F, U+2000-206F, U+20AC, U+2190-22FF, U+2500-27FF;
+}
+
 :root {
   --yellow: #f6c300;
   --cream: #fff2db;
@@ -9,7 +47,7 @@
   --ink: #2b1a0e;
   --max-width: 1440px;
   --page-padding: clamp(1.25rem, 4vw, 4.5rem);
-  --font-sans: var(--font-saans), "Arial Nova", Arial, Helvetica, sans-serif;
+  --font-sans: "GFB Saans", "GFB Saans Fallback", "Arial Nova", Arial, Helvetica, sans-serif;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);

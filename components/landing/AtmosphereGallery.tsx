@@ -2,14 +2,10 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { atmosphereFrames } from "@/content/siteContent";
 import { visualAssets } from "@/config/visualAssets";
 import styles from "@/components/landing/Landing.module.css";
-
-gsap.registerPlugin(useGSAP);
 
 export type AtmosphereOrientation = "landscape" | "portrait" | "square";
 
@@ -130,11 +126,18 @@ export function AtmosphereGallery() {
     };
   }, [reducedMotion]);
 
-  useGSAP(
-    () => {
+  useEffect(() => {
+      if (!inView) return;
       const track = trackRef.current;
       const viewport = viewportRef.current;
       if (!track || !viewport) return;
+      let cancelled = false;
+      let animationContext: { revert: () => void } | undefined;
+      let resizeObserver: ResizeObserver | undefined;
+
+      void import("gsap").then(({ default: gsap }) => {
+      if (cancelled) return;
+      animationContext = gsap.context(() => {
       const slides = gsap.utils.toArray<HTMLElement>("[data-atmosphere-slide]");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -205,17 +208,22 @@ export function AtmosphereGallery() {
       }
 
       if (typeof ResizeObserver !== "undefined") {
-        const observer = new ResizeObserver(() => {
+        resizeObserver = new ResizeObserver(() => {
           gsap.set(track, { x: getTargetX() });
           const nextHeight = slides[active]?.scrollHeight;
           if (nextHeight) gsap.set(viewport, { height: nextHeight });
         });
-        if (activeSlide) observer.observe(activeSlide);
-        return () => observer.disconnect();
+        if (activeSlide) resizeObserver.observe(activeSlide);
       }
-    },
-    { scope: sectionRef, dependencies: [active] },
-  );
+      }, sectionRef);
+      });
+
+      return () => {
+        cancelled = true;
+        resizeObserver?.disconnect();
+        animationContext?.revert();
+      };
+  }, [active, inView]);
 
   return (
     <section
