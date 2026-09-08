@@ -659,6 +659,15 @@ describe("LandingPage", () => {
     expect(mobileCss).toMatch(/\.atmosphereArrows\s*\{[\s\S]*?flex:\s*0 0 auto;/);
   });
 
+  it("caps the sticky conversion bar safe-area padding on tall iPhones", () => {
+    const css = readFileSync("components/landing/Landing.module.css", "utf8");
+    const mobileBarRule = css.match(/\.mobileBar\s*\{([^}]*)\}/)?.[1];
+
+    expect(mobileBarRule).toContain(
+      "min(env(safe-area-inset-bottom), 1.25rem)",
+    );
+  });
+
   it("restores the atmosphere position after a tall mobile slide", () => {
     const css = readFileSync("components/landing/Landing.module.css", "utf8");
 

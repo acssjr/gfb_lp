@@ -2735,7 +2735,8 @@
   justify-content: space-between;
   gap: 0.7rem;
   padding: 0.65rem max(0.8rem, env(safe-area-inset-right))
-    calc(0.65rem + env(safe-area-inset-bottom)) max(0.8rem, env(safe-area-inset-left));
+    calc(0.65rem + min(env(safe-area-inset-bottom), 1.25rem))
+    max(0.8rem, env(safe-area-inset-left));
   color: var(--cream);
   background: var(--brown);
   border-top: 1px solid rgb(255 242 219 / 25%);
