@@ -45,8 +45,8 @@ export const metadata: Metadata = {
     images: ["/brand/gfb-logo.png"],
   },
   icons: {
-    icon: [{ url: "/brand/gfb-logo.png", type: "image/png" }],
-    shortcut: "/brand/gfb-logo.png",
+    icon: [{ url: "/brand/gfb-monogram.svg", type: "image/svg+xml" }],
+    shortcut: "/brand/gfb-monogram.svg",
   },
   robots: { index: true, follow: true },
 };

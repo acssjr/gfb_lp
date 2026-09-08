@@ -278,7 +278,7 @@ export function AtmosphereGallery() {
                       <video
                         key={shouldLoadVideo ? "active" : "idle"}
                         className={styles.atmosphereVideo}
-                        poster={frame.poster}
+                        poster={inView ? frame.poster : undefined}
                         muted
                         loop
                         playsInline

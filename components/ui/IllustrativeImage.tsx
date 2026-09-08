@@ -22,7 +22,7 @@ export function IllustrativeImage({
   return (
     <figure
       className={`${styles.illustrativeFigure} ${styles[ratio]} ${className}`}
-      data-photo-reveal
+      data-photo-reveal={priority ? undefined : true}
       data-depth={depth}
     >
       <div className={styles.illustrativeImageFrame}>

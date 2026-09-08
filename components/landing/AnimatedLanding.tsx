@@ -32,7 +32,7 @@ export function AnimatedLanding({ children }: AnimatedLandingProps) {
           heroTimeline
             .addLabel("hero-in")
             .from(
-              "[data-hero-item]",
+              "[data-hero-item]:not([data-hero-visual])",
               {
                 y: (index) => (index % 2 === 0 ? 22 : 34),
                 rotation: (index) => (index === 5 ? 1.8 : 0),
