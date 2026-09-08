@@ -54,8 +54,8 @@ O `SKILL.md` será curto e atuará como coordenador. As referências só serão 
 
 A pipeline deverá usar, quando disponíveis:
 
-- `revenue-centric-design` para ordenar argumentos, prova, oferta e decisões comerciais;
-- `schwartz-copy` para diagnosticar consciência e sofisticação antes da copy;
+- `revenue-centric-design` como etapa obrigatória antes de ordenar argumentos, prova, oferta e decisões comerciais;
+- `schwartz-copy` como etapa obrigatória antes de escrever qualquer copy persuasiva;
 - `no-ai-slop` para a revisão final de naturalidade, ritmo e precisão;
 - `mobile-first-design` para começar em telas pequenas e evoluir progressivamente;
 - `vercel-react-best-practices` para desempenho e arquitetura React/Next.js;
@@ -114,6 +114,13 @@ Antes de implementar, a skill produzirá uma proposta curta contendo:
 - papel de cada CTA;
 - direção visual baseada na paleta e nos ativos fornecidos.
 
+Esta etapa possui dois gates obrigatórios e ordenados:
+
+1. **Gate Revenue-Centric Design:** carregar `revenue-centric-design` e sua referência `conversion-and-landing-pages.md`. Carregar também `pricing-and-monetization.md` quando houver preços ou planos públicos. Usar os princípios aplicáveis para decidir hierarquia, posição da prova, sequência de objeções, escolha padrão, seção comercial e repetição dos CTAs. Cada seção proposta deve ter uma função de conversão identificável, sem aplicar mecanismos persuasivos apenas por ornamentação.
+2. **Gate Schwartz:** executar `schwartz-copy` em modo módulo com as respostas do briefing. Registrar internamente o desejo dominante, nível de consciência, estágio de sofisticação, tipo de lead, mecanismo, promessa sustentável e prova disponível. Somente depois desse diagnóstico escrever headlines, subtítulos, objeções, ofertas, FAQs e CTAs.
+
+Se um dos gates não puder ser executado, a skill não deverá fingir que aplicou seus princípios. Ela deve explicar o impedimento e interromper a estratégia persuasiva até que a dependência esteja disponível.
+
 A arquitetura-base será:
 
 1. Cabeçalho contrastante.
@@ -145,6 +152,10 @@ Após aprovação da estratégia:
 8. Servir a versão de produção em localhost para validação visual.
 
 ## 5. Contrato de copy
+
+**Dependência obrigatória:** usar `schwartz-copy` antes da primeira versão e sempre que uma mudança alterar promessa, público, oferta, mecanismo ou nível de consciência. Isso garante aplicação explícita dos princípios de *Breakthrough Advertising*, e não apenas uma aproximação estilística.
+
+O intake da nova skill deve alimentar o modo módulo de `schwartz-copy`, evitando repetir ao usuário perguntas que já foram respondidas. O diagnóstico pode permanecer interno durante a geração da página, mas deve estar disponível no resumo estratégico para justificar a abordagem escolhida.
 
 A copy deverá:
 
@@ -450,4 +461,3 @@ A skill estará pronta quando:
    - mantém copy concreta e orientada a objeções;
    - otimiza e verifica mídias em vez de apenas declarar que o fez.
 7. Uma revisão final não encontrar contradições entre briefing, implementação, testes e entrega.
-
