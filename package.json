@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "optimize:svg": "svgo --config svgo.config.mjs public/brand/gfb-monogram.svg public/brand/gfb-logo.svg",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -31,6 +32,7 @@
     "eslint": "9.34.0",
     "eslint-config-next": "16.3.1",
     "jsdom": "26.1.0",
+    "svgo": "^4.1.0",
     "typescript": "5.9.2",
     "vite": "^7.3.6",
     "vitest": "^3.2.7"

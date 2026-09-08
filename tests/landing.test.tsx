@@ -556,10 +556,34 @@ describe("LandingPage", () => {
     expect(carousel?.querySelectorAll("source")).toHaveLength(1);
   });
 
-  it("keeps the horizontal header logo transparent", () => {
+  it("keeps the horizontal header logo free of the hidden export background", () => {
     const logo = readFileSync("public/brand/gfb-logo.svg", "utf8");
 
-    expect(logo).toContain("path:first-of-type{display:none}");
+    expect(logo).not.toContain("path:first-of-type{display:none}");
+    expect(logo).not.toContain("<style>");
+  });
+
+  it("ships a lightweight conventional favicon instead of the full monogram", () => {
+    const favicon = readFileSync("app/favicon.ico");
+    const imageCount = favicon.readUInt16LE(4);
+    const dimensions = Array.from({ length: imageCount }, (_, index) => {
+      const entryOffset = 6 + index * 16;
+      const width = favicon[entryOffset] || 256;
+      const height = favicon[entryOffset + 1] || 256;
+
+      return [width, height];
+    });
+    const layout = readFileSync("app/layout.tsx", "utf8");
+
+    expect(favicon.readUInt16LE(0)).toBe(0);
+    expect(favicon.readUInt16LE(2)).toBe(1);
+    expect(dimensions).toEqual([
+      [16, 16],
+      [32, 32],
+      [48, 48],
+    ]);
+    expect(favicon.byteLength).toBeLessThan(10 * 1024);
+    expect(layout).not.toContain('/brand/gfb-monogram.svg');
   });
 
   it("builds the leveling selector as one adaptive GSAP word morph", () => {
