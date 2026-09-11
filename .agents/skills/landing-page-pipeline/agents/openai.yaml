@@ -1,0 +1,4 @@
+interface:
+  display_name: "Landing Page Pipeline"
+  short_description: "Cria landing pages Next.js orientadas à conversão"
+  default_prompt: "Use $landing-page-pipeline para criar uma landing page Next.js do briefing à prévia local."
